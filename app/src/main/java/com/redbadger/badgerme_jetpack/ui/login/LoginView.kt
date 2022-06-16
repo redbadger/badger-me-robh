@@ -1,26 +1,40 @@
 package com.redbadger.badgerme_jetpack.ui.login
 
 import android.app.Activity
+import android.content.Context
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Snackbar
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import androidx.datastore.preferences.core.edit
+import com.google.android.gms.auth.api.signin.*
+import com.google.android.gms.tasks.Task
 import com.redbadger.badgerme_jetpack.R
+import com.redbadger.badgerme_jetpack.dataStore
 import com.redbadger.badgerme_jetpack.ui.theme.BadgerMe_JetpackTheme
 
 @Composable
 fun LoginView() {
+    val id = LocalContext.current.getString(R.string.gsp_id)
+    val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        .requestIdToken(LocalContext.current.getString(R.string.gsp_id_web))
+        .requestEmail()
+        .build()
+
     Box {
         Column (modifier = Modifier
             .fillMaxSize()
@@ -33,7 +47,7 @@ fun LoginView() {
         Column (modifier = Modifier
             .fillMaxSize()
             .padding(bottom = 30.dp), verticalArrangement = Arrangement.Bottom) {
-            SignInButton()
+            SignInButton(GoogleSignIn.getClient(LocalContext.current, gso))
         }
     }
 }
@@ -45,7 +59,9 @@ fun Title() {
             Image(
                 painter = painterResource(id = R.drawable.orange_box),
                 contentDescription = "Title flair",
-                modifier = Modifier.padding(start = 195.dp).size(90.dp)
+                modifier = Modifier
+                    .padding(start = 195.dp)
+                    .size(90.dp)
             )
             Text(
                 text = "Badger Me",
@@ -122,11 +138,28 @@ fun Icons() {
 }
 
 @Composable
-fun SignInButton() {
+fun SignInButton(googleSignInClient: GoogleSignInClient?) {
+    val startForResult =
+        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val intent = result.data
+                if (result.data != null) {
+                    val task: Task<GoogleSignInAccount> =
+                        GoogleSignIn.getSignedInAccountFromIntent(intent)
+                    handleSignInResult(task)
+                }
+            }
+            else {
+                System.out.println(result.resultCode)
+            }
+        }
+
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
         Button(
             shape = RoundedCornerShape(size = 60.dp),
-            onClick = { /*TODO*/ },
+            onClick = {
+                startForResult.launch(googleSignInClient?.signInIntent)
+            },
             modifier = Modifier
                 .wrapContentHeight()
                 .fillMaxWidth()
@@ -140,13 +173,8 @@ fun SignInButton() {
     }
 }
 
-private fun getGoogleLoginAuth(activity: Activity): GoogleSignInClient {
-    val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-        .requestEmail()
-        .requestId()
-        .requestProfile()
-        .build()
-    return GoogleSignIn.getClient(activity, gso)
+fun handleSignInResult(signInTask: Task<GoogleSignInAccount>) {
+    val account = signInTask.getResult()
 }
 
 @Preview(showBackground = true, showSystemUi = true)
