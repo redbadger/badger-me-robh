@@ -1,8 +1,6 @@
 package com.redbadger.badgerme_jetpack.ui.login
 
 import android.app.Activity
-import android.content.Context
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -11,7 +9,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Snackbar
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -20,11 +17,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.datastore.preferences.core.edit
-import com.google.android.gms.auth.api.signin.*
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.tasks.Task
 import com.redbadger.badgerme_jetpack.R
-import com.redbadger.badgerme_jetpack.dataStore
 import com.redbadger.badgerme_jetpack.ui.theme.BadgerMe_JetpackTheme
 
 @Composable
@@ -173,8 +171,8 @@ fun SignInButton(googleSignInClient: GoogleSignInClient?) {
     }
 }
 
-fun handleSignInResult(signInTask: Task<GoogleSignInAccount>) {
-    val account = signInTask.getResult()
+fun handleSignInResult(task: Task<GoogleSignInAccount>) {
+
 }
 
 @Preview(showBackground = true, showSystemUi = true)
