@@ -146,7 +146,8 @@ fun SignInButton(googleSignInClient: GoogleSignInClient?, navHostController: Nav
         ) {
             Text(
                 text = "Sign in with Google",
-                modifier = Modifier.padding(vertical = 10.dp)
+                modifier = Modifier.padding(vertical = 10.dp),
+                style = MaterialTheme.typography.button
             )
         }
     }

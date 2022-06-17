@@ -3,11 +3,11 @@ package com.redbadger.badgerme_jetpack.ui.setup
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -31,7 +31,41 @@ fun InterestSetupView(navHostController: NavHostController?) {
             }
         }
         Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
-            MultiselectInterest(painter = painterResource(id = R.drawable.property_1_food), name = "Food")
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                MultiselectInterest(
+                    painter = painterResource(id = R.drawable.property_1_food),
+                    name = "Food"
+                )
+                Spacer(modifier = Modifier.padding(8.dp))
+                MultiselectInterest(
+                    painter = painterResource(id = R.drawable.property_1_drinks),
+                    name = "Drinks"
+                )
+            }
+            Spacer(modifier = Modifier.padding(8.dp))
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                MultiselectInterest(
+                    painter = painterResource(id = R.drawable.property_1_coffee),
+                    name = "Coffee"
+                )
+                Spacer(modifier = Modifier.padding(8.dp))
+                MultiselectInterest(
+                    painter = painterResource(id = R.drawable.property_1_chats),
+                    name = "Chats"
+                )
+            }
+            Spacer(modifier = Modifier.padding(8.dp))
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                MultiselectInterest(
+                    painter = painterResource(id = R.drawable.property_1_walks),
+                    name = "Walks"
+                )
+                Spacer(modifier = Modifier.padding(8.dp))
+                MultiselectInterest(
+                    painter = painterResource(id = R.drawable.property_1_hugs),
+                    name = "Hugs"
+                )
+            }
         }
         Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
@@ -47,7 +81,8 @@ fun InterestSetupView(navHostController: NavHostController?) {
                 ) {
                     Text(
                         text = "Continue",
-                        modifier = Modifier.padding(vertical = 10.dp)
+                        modifier = Modifier.padding(vertical = 10.dp),
+                        style = MaterialTheme.typography.button
                     )
                 }
             }
@@ -57,11 +92,27 @@ fun InterestSetupView(navHostController: NavHostController?) {
 
 @Composable
 fun MultiselectInterest(painter: Painter, name: String) {
-    Row {
-        Image(painter = painter, contentDescription = "%s interest icon".format(name))
-    }
-    Row {
-        Text(text = name)
+    Card(elevation = 4.dp, modifier = Modifier.width(112.dp).height(116.dp)) {
+        Column {
+            Row {
+                Box {
+                    Image(painter = painter, contentDescription = "%s interest icon".format(name))
+                    Column(modifier = Modifier.fillMaxHeight(),verticalArrangement = Arrangement.Top) {
+                        Row(modifier = Modifier.fillMaxWidth(),horizontalArrangement = Arrangement.End) {
+                            Checkbox(checked = false, onCheckedChange = {
+                                /* TODO */
+                            })
+                        }
+                    }
+                }
+            }
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                Text(
+                    text = name,
+                    style = MaterialTheme.typography.body1
+                )
+            }
+        }
     }
 }
 
