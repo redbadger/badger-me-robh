@@ -17,16 +17,19 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.tasks.Task
 import com.redbadger.badgerme_jetpack.R
+import com.redbadger.badgerme_jetpack.navigation.Screen
+import com.redbadger.badgerme_jetpack.ui.Title
 import com.redbadger.badgerme_jetpack.ui.theme.BadgerMe_JetpackTheme
 
 @Composable
-fun LoginView() {
+fun LoginView(navHostController: NavHostController?) {
     val id = LocalContext.current.getString(R.string.gsp_id)
     val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
         .requestIdToken(LocalContext.current.getString(R.string.gsp_id_web))
@@ -36,7 +39,7 @@ fun LoginView() {
     Box {
         Column (modifier = Modifier
             .fillMaxSize()
-            .padding(top = 30.dp)) {
+            .padding(top = 30.dp), verticalArrangement = Arrangement.Top) {
             Title()
         }
         Column (modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
@@ -45,31 +48,9 @@ fun LoginView() {
         Column (modifier = Modifier
             .fillMaxSize()
             .padding(bottom = 30.dp), verticalArrangement = Arrangement.Bottom) {
-            SignInButton(GoogleSignIn.getClient(LocalContext.current, gso))
+            SignInButton(GoogleSignIn.getClient(LocalContext.current, gso), navHostController)
         }
     }
-}
-
-@Composable
-fun Title() {
-    Row (modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center){
-        Box {
-            Image(
-                painter = painterResource(id = R.drawable.orange_box),
-                contentDescription = "Title flair",
-                modifier = Modifier
-                    .padding(start = 195.dp)
-                    .size(90.dp)
-            )
-            Text(
-                text = "Badger Me",
-                color = MaterialTheme.colors.onBackground,
-                style = MaterialTheme.typography.h2,
-                textAlign = TextAlign.Center
-            )
-        }
-    }
-
 }
 
 @Composable
@@ -136,7 +117,7 @@ fun Icons() {
 }
 
 @Composable
-fun SignInButton(googleSignInClient: GoogleSignInClient?) {
+fun SignInButton(googleSignInClient: GoogleSignInClient?, navHostController: NavHostController?) {
     val startForResult =
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
             if (result.resultCode == Activity.RESULT_OK) {
@@ -144,7 +125,7 @@ fun SignInButton(googleSignInClient: GoogleSignInClient?) {
                 if (result.data != null) {
                     val task: Task<GoogleSignInAccount> =
                         GoogleSignIn.getSignedInAccountFromIntent(intent)
-                    handleSignInResult(task)
+                    handleSignInResult(task, navHostController)
                 }
             }
             else {
@@ -171,14 +152,14 @@ fun SignInButton(googleSignInClient: GoogleSignInClient?) {
     }
 }
 
-fun handleSignInResult(task: Task<GoogleSignInAccount>) {
-
+fun handleSignInResult(task: Task<GoogleSignInAccount>, navHostController: NavHostController?) {
+    navHostController?.navigate(Screen.InterestsSetup.route)
 }
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun DefaultPreview() {
     BadgerMe_JetpackTheme {
-        LoginView()
+        LoginView(null)
     }
 }
