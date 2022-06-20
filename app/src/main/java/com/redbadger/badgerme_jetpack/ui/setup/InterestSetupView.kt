@@ -9,6 +9,7 @@ import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -23,6 +24,14 @@ import com.redbadger.badgerme_jetpack.ui.theme.BadgerMe_JetpackTheme
 
 @Composable
 fun InterestSetupView(navHostController: NavHostController?) {
+    val interests = mutableMapOf(
+        "food" to remember { mutableStateOf(false) },
+        "drinks" to remember { mutableStateOf(false) },
+        "coffee" to remember { mutableStateOf(false) },
+        "chats" to remember { mutableStateOf(false) },
+        "walks" to remember { mutableStateOf(false) },
+        "hugs" to remember { mutableStateOf(false) }
+    )
     Box {
         Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Top) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
@@ -36,39 +45,57 @@ fun InterestSetupView(navHostController: NavHostController?) {
         }
         Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                MultiselectInterest(
-                    painter = painterResource(id = R.drawable.property_1_food),
-                    name = "Food"
-                )
+                interests["food"]?.let {
+                    MultiselectInterest(
+                        painter = painterResource(id = R.drawable.property_1_food),
+                        name = "Food",
+                        ticked = it
+                    )
+                }
                 Spacer(modifier = Modifier.padding(8.dp))
-                MultiselectInterest(
-                    painter = painterResource(id = R.drawable.property_1_drinks),
-                    name = "Drinks"
-                )
+                interests["drinks"]?.let {
+                    MultiselectInterest(
+                        painter = painterResource(id = R.drawable.property_1_drinks),
+                        name = "Drinks",
+                        ticked = it
+                    )
+                }
             }
             Spacer(modifier = Modifier.padding(8.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                MultiselectInterest(
-                    painter = painterResource(id = R.drawable.property_1_coffee),
-                    name = "Coffee"
-                )
+                interests["coffee"]?.let {
+                    MultiselectInterest(
+                        painter = painterResource(id = R.drawable.property_1_coffee),
+                        name = "Coffee",
+                        ticked = it
+                    )
+                }
                 Spacer(modifier = Modifier.padding(8.dp))
-                MultiselectInterest(
-                    painter = painterResource(id = R.drawable.property_1_chats),
-                    name = "Chats"
-                )
+                interests["chats"]?.let {
+                    MultiselectInterest(
+                        painter = painterResource(id = R.drawable.property_1_chats),
+                        name = "Chats",
+                        ticked = it
+                    )
+                }
             }
             Spacer(modifier = Modifier.padding(8.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                MultiselectInterest(
-                    painter = painterResource(id = R.drawable.property_1_walks),
-                    name = "Walks"
-                )
+                interests["walks"]?.let {
+                    MultiselectInterest(
+                        painter = painterResource(id = R.drawable.property_1_walks),
+                        name = "Walks",
+                        ticked = it
+                    )
+                }
                 Spacer(modifier = Modifier.padding(8.dp))
-                MultiselectInterest(
-                    painter = painterResource(id = R.drawable.property_1_hugs),
-                    name = "Hugs"
-                )
+                interests["hugs"]?.let {
+                    MultiselectInterest(
+                        painter = painterResource(id = R.drawable.property_1_hugs),
+                        name = "Hugs",
+                        ticked = it
+                    )
+                }
             }
         }
         Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom) {
@@ -95,15 +122,14 @@ fun InterestSetupView(navHostController: NavHostController?) {
 }
 
 @Composable
-fun MultiselectInterest(painter: Painter, name: String) {
-    val isCheck = remember { mutableStateOf(false) }
+fun MultiselectInterest(painter: Painter, name: String, ticked: MutableState<Boolean>) {
 
     Card(
         elevation = 4.dp,
         modifier = Modifier
             .width(112.dp)
             .height(116.dp)
-            .clickable { isCheck.value = !isCheck.value }
+            .clickable { ticked.value = !ticked.value }
     ){
         Column {
             Row {
@@ -128,7 +154,7 @@ fun MultiselectInterest(painter: Painter, name: String) {
                                     horizontalArrangement = Arrangement.Center) {
                                     Column(modifier = Modifier.fillMaxHeight(),
                                         verticalArrangement = Arrangement.Center) {
-                                        if (isCheck.value) {
+                                        if (ticked.value) {
                                             Image(
                                                 painter = painterResource(id = R.drawable.vector_13__stroke_),
                                                 contentDescription = "tickmark",
