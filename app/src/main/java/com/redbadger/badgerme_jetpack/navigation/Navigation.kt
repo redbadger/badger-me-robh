@@ -9,7 +9,7 @@ import com.redbadger.badgerme_jetpack.ui.setup.InterestSetupView
 import com.redbadger.badgerme_jetpack.ui.splash.SplashView
 
 @Composable
-fun Navigation() {
+fun NavigationHost() {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = Screen.Login.route) {
         composable(Screen.Splash.route) { SplashView(navController)}
