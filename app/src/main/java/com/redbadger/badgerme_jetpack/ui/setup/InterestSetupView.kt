@@ -1,13 +1,17 @@
 package com.redbadger.badgerme_jetpack.ui.setup
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.Button
+import androidx.compose.material.Card
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -92,16 +96,48 @@ fun InterestSetupView(navHostController: NavHostController?) {
 
 @Composable
 fun MultiselectInterest(painter: Painter, name: String) {
-    Card(elevation = 4.dp, modifier = Modifier.width(112.dp).height(116.dp)) {
+    val isCheck = remember { mutableStateOf(false) }
+
+    Card(
+        elevation = 4.dp,
+        modifier = Modifier
+            .width(112.dp)
+            .height(116.dp)
+            .clickable { isCheck.value = !isCheck.value }
+    ){
         Column {
             Row {
                 Box {
-                    Image(painter = painter, contentDescription = "%s interest icon".format(name))
-                    Column(modifier = Modifier.fillMaxHeight(),verticalArrangement = Arrangement.Top) {
-                        Row(modifier = Modifier.fillMaxWidth(),horizontalArrangement = Arrangement.End) {
-                            Checkbox(checked = false, onCheckedChange = {
-                                /* TODO */
-                            })
+                    Image(
+                        painter = painter,
+                        contentDescription = "%s interest icon".format(name)
+                    )
+                    Column(verticalArrangement = Arrangement.Top) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(4.dp),
+                            horizontalArrangement = Arrangement.End) {
+                            Box(modifier = Modifier.size(16.dp)) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.control_background),
+                                    contentDescription = "tickbox",
+                                    modifier = Modifier.size(16.dp)
+                                )
+                                Row(modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.Center) {
+                                    Column(modifier = Modifier.fillMaxHeight(),
+                                        verticalArrangement = Arrangement.Center) {
+                                        if (isCheck.value) {
+                                            Image(
+                                                painter = painterResource(id = R.drawable.vector_13__stroke_),
+                                                contentDescription = "tickmark",
+                                                modifier = Modifier.size(10.67.dp)
+                                            )
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
