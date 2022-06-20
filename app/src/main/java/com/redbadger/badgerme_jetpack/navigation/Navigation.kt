@@ -6,6 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.redbadger.badgerme_jetpack.ui.login.LoginView
 import com.redbadger.badgerme_jetpack.ui.setup.InterestSetupView
+import com.redbadger.badgerme_jetpack.ui.setup.ProfileSetupView
 import com.redbadger.badgerme_jetpack.ui.splash.SplashView
 
 @Composable
@@ -15,6 +16,7 @@ fun NavigationHost() {
         composable(Screen.Splash.route) { SplashView(navController)}
         composable(Screen.Login.route) { LoginView(navController) }
         composable(Screen.InterestsSetup.route) { InterestSetupView(navController) }
+        composable(Screen.ProfileSetup.route) { ProfileSetupView(navController)}
     }
 }
 
@@ -22,4 +24,5 @@ sealed class Screen(val route: String) {
     object Splash: Screen("splash")
     object Login: Screen("login")
     object InterestsSetup: Screen("setup/interests")
+    object ProfileSetup: Screen("setup/profile")
 }
