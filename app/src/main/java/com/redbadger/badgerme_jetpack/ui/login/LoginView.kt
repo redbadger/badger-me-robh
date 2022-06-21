@@ -9,8 +9,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Snackbar
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -18,6 +21,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.android.volley.VolleyError
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -27,10 +31,10 @@ import com.redbadger.badgerme_jetpack.R
 import com.redbadger.badgerme_jetpack.navigation.Screen
 import com.redbadger.badgerme_jetpack.ui.Title
 import com.redbadger.badgerme_jetpack.ui.theme.BadgerMe_JetpackTheme
+import com.redbadger.badgerme_jetpack.util.addUser
 
 @Composable
 fun LoginView(navHostController: NavHostController?) {
-    val id = LocalContext.current.getString(R.string.gsp_id)
     val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
         .requestIdToken(LocalContext.current.getString(R.string.gsp_id_web))
         .requestEmail()
@@ -118,6 +122,8 @@ fun Icons() {
 
 @Composable
 fun SignInButton(googleSignInClient: GoogleSignInClient?, navHostController: NavHostController?) {
+    val account = remember { mutableStateOf<GoogleSignInAccount?> (null)}
+    val signInFailure = remember { mutableStateOf (false) }
     val startForResult =
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
             if (result.resultCode == Activity.RESULT_OK) {
@@ -125,11 +131,11 @@ fun SignInButton(googleSignInClient: GoogleSignInClient?, navHostController: Nav
                 if (result.data != null) {
                     val task: Task<GoogleSignInAccount> =
                         GoogleSignIn.getSignedInAccountFromIntent(intent)
-                    handleSignInResult(task, navHostController)
+                    account.value = task.result
                 }
-            }
-            else {
-                System.out.println(result.resultCode)
+                else {
+                    signInFailure.value = true
+                }
             }
         }
 
@@ -151,9 +157,20 @@ fun SignInButton(googleSignInClient: GoogleSignInClient?, navHostController: Nav
             )
         }
     }
+    account.value?.let {
+        HandleSignIn(account = it, navHostController = navHostController)
+    }
+    if (signInFailure.value) {
+        Snackbar {
+            Text(text = "Google sign in failure")
+        }
+    }
 }
 
-fun handleSignInResult(task: Task<GoogleSignInAccount>, navHostController: NavHostController?) {
+@Composable
+fun HandleSignIn(account: GoogleSignInAccount, navHostController: NavHostController?) {
+    val context = LocalContext.current
+    addUser(email = account.email!!, token = account.idToken!!, context)
     navHostController?.navigate(Screen.InterestsSetup.route)
 }
 
