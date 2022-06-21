@@ -36,7 +36,7 @@ fun ProfileSetupView(navHostController: NavHostController?) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
                 Image(
                     painter = painterResource(id = R.drawable.avatar_human),
-                    contentDescription = "food",
+                    contentDescription = "avatar",
                     modifier = Modifier
                         .size(96.dp)
                 )
