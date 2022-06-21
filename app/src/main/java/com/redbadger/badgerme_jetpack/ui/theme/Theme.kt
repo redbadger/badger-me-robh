@@ -34,41 +34,49 @@ private val LightColorPalette = lightColors(
 )
 
 private val BadgerTypography = Typography(
+//    Heading Display
     h1 = TextStyle(
         fontFamily = FontFamily.SansSerif,
         fontWeight = FontWeight.Bold,
         fontSize = 34.sp
     ),
+//    Heading Large
     h2 = TextStyle(
         fontFamily = FontFamily.SansSerif,
         fontWeight = FontWeight.Bold,
         fontSize = 28.sp
     ),
+//    Heading Medium
     h3 = TextStyle(
         fontFamily = FontFamily.SansSerif,
         fontWeight = FontWeight.Bold,
         fontSize = 24.sp
     ),
+//    Heading Small
     h4 = TextStyle(
         fontFamily = FontFamily.SansSerif,
         fontWeight = FontWeight.Bold,
         fontSize = 20.sp
     ),
+//    Heading Headline
     h5 = TextStyle(
         fontFamily = FontFamily.SansSerif,
         fontWeight = FontWeight.Bold,
         fontSize = 16.sp
     ),
+//    Paragraph Medium
     body1 = TextStyle(
         fontFamily = FontFamily.SansSerif,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp
     ),
+//    Paragraph Small
     body2 = TextStyle(
         fontFamily = FontFamily.SansSerif,
         fontWeight = FontWeight.Normal,
         fontSize = 12.sp
     ),
+//    Label Medium
     button = TextStyle(
         fontFamily = FontFamily.SansSerif,
         fontWeight = FontWeight.SemiBold,
