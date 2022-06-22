@@ -31,7 +31,11 @@ import com.redbadger.badgerme_jetpack.R
 import com.redbadger.badgerme_jetpack.navigation.Screen
 import com.redbadger.badgerme_jetpack.ui.Title
 import com.redbadger.badgerme_jetpack.ui.theme.BadgerMe_JetpackTheme
+import com.redbadger.badgerme_jetpack.util.BadgerApiInterface
+import com.redbadger.badgerme_jetpack.util.RetrofitHelper
 import com.redbadger.badgerme_jetpack.util.addUser
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 @Composable
 fun LoginView(navHostController: NavHostController?) {
@@ -158,7 +162,7 @@ fun SignInButton(googleSignInClient: GoogleSignInClient?, navHostController: Nav
         }
     }
     account.value?.let {
-        HandleSignIn(account = it, navHostController = navHostController)
+        handleSignIn(account = it, navHostController = navHostController)
     }
     if (signInFailure.value) {
         Snackbar {
@@ -167,11 +171,21 @@ fun SignInButton(googleSignInClient: GoogleSignInClient?, navHostController: Nav
     }
 }
 
-@Composable
-fun HandleSignIn(account: GoogleSignInAccount, navHostController: NavHostController?) {
-    val context = LocalContext.current
-    addUser(email = account.email!!, token = account.idToken!!, context)
-    navHostController?.navigate(Screen.InterestsSetup.route)
+//@Composable
+fun handleSignIn(account: GoogleSignInAccount, navHostController: NavHostController?) {
+//    val context = LocalContext.current
+    val badgerApi = RetrofitHelper.getInstance().create(BadgerApiInterface::class.java)
+//    Launch coroutine
+    GlobalScope.launch {
+        val result = badgerApi.addUser(account.idToken!!, account.email!!)
+        if (result.isSuccessful) {
+            println(result.toString())
+            navHostController?.navigate(Screen.InterestsSetup.route)
+        }
+        else {
+            println(result.errorBody())
+        }
+    }
 }
 
 @Preview(showBackground = true, showSystemUi = true)

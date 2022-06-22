@@ -5,34 +5,18 @@ import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import org.json.JSONObject
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
-fun addUser(email: String, token: String, context: Context) {
-    val url = "https://leafy-stroopwafel-d2f43b.netlify.app/api/"
-    // Instantiate the RequestQueue.
-    val queue = Volley.newRequestQueue(context)
-    val params = JSONObject()
-    params.put("email", email)
+const val baseUrl = "https://leafy-stroopwafel-d2f43b.netlify.app/api/"
 
-    val jsonObjectRequest = object: JsonObjectRequest(
-        Method.GET,
-        url,
-        params,
-        Response.Listener { response ->
-            println("Response: %s".format(response.toString()))
-        },
-        Response.ErrorListener { err ->
-//            Need to work out best way of pushing this up to the page for a snackbar
-//            Also need to wait for a response before continuing
-            println("Error: %s".format(err.message))
-        }
-    ){
-        override fun getHeaders(): MutableMap<String, String> {
-            val headers = HashMap<String, String>()
-            headers["Authorization"] = token
-            return headers
-        }
+object RetrofitHelper {
+
+    fun getInstance(): Retrofit {
+        return Retrofit.Builder().baseUrl(baseUrl)
+            .addConverterFactory(GsonConverterFactory.create())
+            // we need to add converter factory to
+            // convert JSON object to Java object
+            .build()
     }
-
-    // Add the request to the RequestQueue.
-    queue.add(jsonObjectRequest)
 }
