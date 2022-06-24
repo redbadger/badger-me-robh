@@ -7,13 +7,11 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Snackbar
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -21,7 +19,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.android.volley.VolleyError
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -33,9 +30,9 @@ import com.redbadger.badgerme_jetpack.ui.Title
 import com.redbadger.badgerme_jetpack.ui.theme.BadgerMe_JetpackTheme
 import com.redbadger.badgerme_jetpack.util.BadgerApiInterface
 import com.redbadger.badgerme_jetpack.util.RetrofitHelper
-import com.redbadger.badgerme_jetpack.util.addUser
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+
+val error = ""
 
 @Composable
 fun LoginView(navHostController: NavHostController?) {
@@ -127,9 +124,11 @@ fun Icons() {
 @Composable
 fun SignInButton(googleSignInClient: GoogleSignInClient?, navHostController: NavHostController?) {
     val account = remember { mutableStateOf<GoogleSignInAccount?> (null)}
-    val signInFailure = remember { mutableStateOf (false) }
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+
     val startForResult =
-        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+    rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val intent = result.data
                 if (result.data != null) {
@@ -138,11 +137,14 @@ fun SignInButton(googleSignInClient: GoogleSignInClient?, navHostController: Nav
                     account.value = task.result
                 }
                 else {
-                    signInFailure.value = true
+                    scope.launch{
+                        onError(snackbarHostState,"Google Sign in failure")
+                    }
                 }
             }
         }
 
+    SnackbarHost(hostState = snackbarHostState)
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
         Button(
             shape = RoundedCornerShape(size = 60.dp),
@@ -162,31 +164,46 @@ fun SignInButton(googleSignInClient: GoogleSignInClient?, navHostController: Nav
         }
     }
     account.value?.let {
-        handleSignIn(account = it, navHostController = navHostController)
-    }
-    if (signInFailure.value) {
-        Snackbar {
-            Text(text = "Google sign in failure")
-        }
+        handleSignIn(account = it, navHostController = navHostController, snackbarHostState, scope)
     }
 }
 
-//@Composable
-fun handleSignIn(account: GoogleSignInAccount, navHostController: NavHostController?) {
-//    val context = LocalContext.current
+fun handleSignIn(
+    account: GoogleSignInAccount,
+    navHostController: NavHostController?,
+    snackbarHostState: SnackbarHostState,
+    snackbarScope: CoroutineScope
+) {
     val badgerApi = RetrofitHelper.getInstance().create(BadgerApiInterface::class.java)
-//    Launch coroutine
-    GlobalScope.launch {
-        val result = badgerApi.addUser(account.idToken!!, account.email!!)
-        if (result.isSuccessful) {
-            println(result.toString())
-            navHostController?.navigate(Screen.InterestsSetup.route)
-        }
-        else {
-            println(result.errorBody())
+    val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        snackbarScope.launch {
+            onError(snackbarHostState, "Exception: ${throwable.localizedMessage}")
         }
     }
+
+    CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+        val response = badgerApi.addUser(account.idToken!!, account.email!!)
+        withContext(Dispatchers.Main) {
+            if (response.isSuccessful)
+            {
+                println(response.toString())
+                navHostController?.navigate(Screen.InterestsSetup.route)
+            } else
+            {
+                println(response.errorBody().toString())
+                snackbarScope.launch {
+                    onError(snackbarHostState, response.message().ifEmpty { "Error! Response code ${response.code()}" })
+                }
+            }
+        }
+    }
+
 }
+
+private suspend fun onError(snackbarHostState: SnackbarHostState, errorMessage: String) {
+    snackbarHostState.showSnackbar(errorMessage)
+}
+
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
