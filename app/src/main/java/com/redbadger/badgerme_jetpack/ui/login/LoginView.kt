@@ -32,7 +32,6 @@ import com.redbadger.badgerme_jetpack.util.BadgerApiInterface
 import com.redbadger.badgerme_jetpack.util.RetrofitHelper
 import kotlinx.coroutines.*
 
-val error = ""
 
 @Composable
 fun LoginView(navHostController: NavHostController?) {
@@ -123,7 +122,6 @@ fun Icons() {
 
 @Composable
 fun SignInButton(googleSignInClient: GoogleSignInClient?, navHostController: NavHostController?) {
-    val account = remember { mutableStateOf<GoogleSignInAccount?> (null)}
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -134,7 +132,7 @@ fun SignInButton(googleSignInClient: GoogleSignInClient?, navHostController: Nav
                 if (result.data != null) {
                     val task: Task<GoogleSignInAccount> =
                         GoogleSignIn.getSignedInAccountFromIntent(intent)
-                    account.value = task.result
+                    handleSignIn(account = task.result, navHostController = navHostController, snackbarHostState, scope)
                 }
                 else {
                     scope.launch{
@@ -163,9 +161,6 @@ fun SignInButton(googleSignInClient: GoogleSignInClient?, navHostController: Nav
             )
         }
     }
-    account.value?.let {
-        handleSignIn(account = it, navHostController = navHostController, snackbarHostState, scope)
-    }
 }
 
 fun handleSignIn(
@@ -182,11 +177,14 @@ fun handleSignIn(
     }
 
     CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-        val response = badgerApi.addUser(account.idToken!!, account.email!!)
+        val response = badgerApi.addUser("Bearer ${account.idToken!!}", account.email!!)
         withContext(Dispatchers.Main) {
             if (response.isSuccessful)
             {
                 println(response.toString())
+                snackbarScope.launch {
+                    onError(snackbarHostState, response.message().ifEmpty { "Success!" })
+                }
                 navHostController?.navigate(Screen.InterestsSetup.route)
             } else
             {
