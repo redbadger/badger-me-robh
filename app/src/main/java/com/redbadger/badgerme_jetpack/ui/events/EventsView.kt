@@ -18,7 +18,7 @@ import com.redbadger.badgerme_jetpack.R
 import com.redbadger.badgerme_jetpack.ui.theme.BadgerMe_JetpackTheme
 
 @Composable
-fun BadgerEventsView(navHostController: NavHostController?) {
+fun BadgerEventsView(navHostController: NavHostController?, userId: String?) {
     val tabs = listOf("Today", "Upcoming")
     Box {
         Column (Modifier.padding(start = 16.dp, top = 7.5.dp, end = 16.dp)) {
@@ -68,6 +68,6 @@ fun BadgerEventsView(navHostController: NavHostController?) {
 @Composable
 fun ProfilePreview() {
     BadgerMe_JetpackTheme {
-        BadgerEventsView( null )
+        BadgerEventsView( null, "1" )
     }
 }

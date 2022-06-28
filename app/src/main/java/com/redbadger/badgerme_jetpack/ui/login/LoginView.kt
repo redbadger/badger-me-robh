@@ -132,7 +132,7 @@ fun SignInButton(googleSignInClient: GoogleSignInClient?, navHostController: Nav
                 if (result.data != null) {
                     val task: Task<GoogleSignInAccount> =
                         GoogleSignIn.getSignedInAccountFromIntent(intent)
-                    signIn(account = task.result, navHostController = navHostController, snackbarHostState, scope)
+                    signIn(account = task.result, navHostController = navHostController, snackbarHostState, scope, false)
                 }
                 else {
                     scope.launch{
@@ -185,7 +185,7 @@ fun register (
                 snackbarScope.launch {
                     onError(snackbarHostState, response.message().ifEmpty { "Registration success! Proceeding to sign in..." })
                 }
-                signIn(account, navHostController, snackbarHostState, snackbarScope)
+                signIn(account, navHostController, snackbarHostState, snackbarScope, true)
             } else
             {
                 println(response.errorBody().toString())
@@ -200,7 +200,8 @@ fun register (
 fun signIn(account: GoogleSignInAccount,
            navHostController: NavHostController?,
            snackbarHostState: SnackbarHostState,
-           snackbarScope: CoroutineScope) {
+           snackbarScope: CoroutineScope,
+           newUser: Boolean) {
     val badgerApi = RetrofitHelper.getInstance().create(BadgerApiInterface::class.java)
     val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         snackbarScope.launch {
@@ -223,9 +224,16 @@ fun signIn(account: GoogleSignInAccount,
 //                    snackbarScope.launch {
 //                        onError(snackbarHostState, "DEBUG: Got ${response.body()?.get(0)?.firstName} ${response.body()?.get(0)?.lastName}!")
 //                    }
-                    navHostController?.navigate(
-                        "${Screen.InterestsSetup.route}/${response.body()?.get(0)?.id}"
-                    )
+                    if (newUser) {
+                        navHostController?.navigate(
+                            "${Screen.InterestsSetup.route}/${response.body()?.get(0)?.id}"
+                        )
+                    }
+                    else {
+                        navHostController?.navigate(
+                            "${Screen.Events.route}/${response.body()?.get(0)?.id}"
+                        )
+                    }
                 }
             }
             else {

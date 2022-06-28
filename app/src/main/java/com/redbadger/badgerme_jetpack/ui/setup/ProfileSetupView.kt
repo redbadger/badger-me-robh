@@ -20,7 +20,7 @@ import com.redbadger.badgerme_jetpack.R
 import com.redbadger.badgerme_jetpack.ui.theme.BadgerMe_JetpackTheme
 
 @Composable
-fun ProfileSetupView(navHostController: NavHostController?) {
+fun ProfileSetupView(navHostController: NavHostController?, userId: String?) {
     val name = remember { mutableStateOf("") }
     val bio = remember { mutableStateOf("") }
     Box {
@@ -109,6 +109,6 @@ fun ProfileSetupView(navHostController: NavHostController?) {
 @Composable
 fun ProfilePreview() {
     BadgerMe_JetpackTheme {
-        ProfileSetupView( null )
+        ProfileSetupView( null, "1" )
     }
 }
