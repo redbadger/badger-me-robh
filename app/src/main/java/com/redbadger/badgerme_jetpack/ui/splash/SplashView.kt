@@ -48,7 +48,6 @@ fun SplashView(navHostController: NavHostController?) {
         }
     }
 
-    Thread.sleep(10000)
     navHostController?.navigate(Screen.Login.route)
 }
 

@@ -1,21 +1,21 @@
 package com.redbadger.badgerme_jetpack.util
 
 import retrofit2.Response
-import retrofit2.http.GET
-import retrofit2.http.Header
-import retrofit2.http.POST
-import retrofit2.http.Query
+import retrofit2.http.*
 
 interface BadgerApiInterface {
     @GET("users")
-    suspend fun getUsers()
+    suspend fun getUserByEmail(
+        @Header("authorization") token: String,
+        @Query("email") email: String
+    ): Response<List<BadgerUser>>
 
     @GET("users/{id}")
-    suspend fun getUser()
+    suspend fun getUserById()
 
     @POST("users")
     suspend fun addUser (
         @Header("authorization") token: String,
         @Query("email") email: String
-    ): Response<Void>
+    ): Response<String>
 }

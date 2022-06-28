@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -29,6 +28,7 @@ import com.redbadger.badgerme_jetpack.navigation.Screen
 import com.redbadger.badgerme_jetpack.ui.Title
 import com.redbadger.badgerme_jetpack.ui.theme.BadgerMe_JetpackTheme
 import com.redbadger.badgerme_jetpack.util.BadgerApiInterface
+import com.redbadger.badgerme_jetpack.util.BadgerUser
 import com.redbadger.badgerme_jetpack.util.RetrofitHelper
 import kotlinx.coroutines.*
 
@@ -132,7 +132,7 @@ fun SignInButton(googleSignInClient: GoogleSignInClient?, navHostController: Nav
                 if (result.data != null) {
                     val task: Task<GoogleSignInAccount> =
                         GoogleSignIn.getSignedInAccountFromIntent(intent)
-                    handleSignIn(account = task.result, navHostController = navHostController, snackbarHostState, scope)
+                    signIn(account = task.result, navHostController = navHostController, snackbarHostState, scope)
                 }
                 else {
                     scope.launch{
@@ -163,7 +163,7 @@ fun SignInButton(googleSignInClient: GoogleSignInClient?, navHostController: Nav
     }
 }
 
-fun handleSignIn(
+fun register (
     account: GoogleSignInAccount,
     navHostController: NavHostController?,
     snackbarHostState: SnackbarHostState,
@@ -183,9 +183,9 @@ fun handleSignIn(
             {
                 println(response.toString())
                 snackbarScope.launch {
-                    onError(snackbarHostState, response.message().ifEmpty { "Success!" })
+                    onError(snackbarHostState, response.message().ifEmpty { "Registration success! Proceeding to sign in..." })
                 }
-                navHostController?.navigate(Screen.InterestsSetup.route)
+                signIn(account, navHostController, snackbarHostState, snackbarScope)
             } else
             {
                 println(response.errorBody().toString())
@@ -195,7 +195,45 @@ fun handleSignIn(
             }
         }
     }
+}
 
+fun signIn(account: GoogleSignInAccount,
+           navHostController: NavHostController?,
+           snackbarHostState: SnackbarHostState,
+           snackbarScope: CoroutineScope) {
+    val badgerApi = RetrofitHelper.getInstance().create(BadgerApiInterface::class.java)
+    val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        snackbarScope.launch {
+            onError(snackbarHostState, "Exception: ${throwable.localizedMessage}")
+        }
+    }
+
+    CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+        val response = badgerApi.getUserByEmail("Bearer ${account.idToken!!}", account.email!!)
+        withContext(Dispatchers.Main) {
+            if (response.isSuccessful)
+            {
+                if (response.body()?.isEmpty() == true) {
+                    snackbarScope.launch {
+                        onError(snackbarHostState, "DEBUG: No matching Badgers found - proceeding to register...")
+                    }
+                    register(account, navHostController, snackbarHostState, snackbarScope)
+                }
+                else {
+//                    snackbarScope.launch {
+//                        onError(snackbarHostState, "DEBUG: Got ${response.body()?.get(0)?.firstName} ${response.body()?.get(0)?.lastName}!")
+//                    }
+                    navHostController?.navigate(Screen.InterestsSetup.route)
+                }
+            }
+            else {
+                println(response.errorBody().toString())
+                snackbarScope.launch {
+                    onError(snackbarHostState, response.message().ifEmpty { "Error! Response code ${response.code()}" })
+                }
+            }
+        }
+    }
 }
 
 private suspend fun onError(snackbarHostState: SnackbarHostState, errorMessage: String) {
