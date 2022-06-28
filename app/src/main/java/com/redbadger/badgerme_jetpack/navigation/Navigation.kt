@@ -15,8 +15,10 @@ fun NavigationHost() {
     NavHost(navController = navController, startDestination = Screen.Login.route) {
         composable(Screen.Splash.route) { SplashView(navController)}
         composable(Screen.Login.route) { LoginView(navController) }
-        composable(Screen.InterestsSetup.route) { InterestSetupView(navController) }
-        composable(Screen.ProfileSetup.route) { ProfileSetupView(navController)}
+        composable(Screen.InterestsSetup.route + "/{userId}") { backStackEntry ->
+            InterestSetupView(navController, backStackEntry.arguments?.getString("userId"))
+         }
+        composable(Screen.ProfileSetup.route + "/{userId}") { ProfileSetupView(navController)}
     }
 }
 

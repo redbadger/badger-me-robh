@@ -24,7 +24,10 @@ import com.redbadger.badgerme_jetpack.navigation.Screen
 import com.redbadger.badgerme_jetpack.ui.theme.BadgerMe_JetpackTheme
 
 @Composable
-fun InterestSetupView(navHostController: NavHostController?) {
+fun InterestSetupView(navHostController: NavHostController?, userId: String?) {
+    val snackbarScope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+
     val food = remember { mutableStateOf(false) }
     val drinks = remember { mutableStateOf(false) }
     val coffee = remember { mutableStateOf(false) }

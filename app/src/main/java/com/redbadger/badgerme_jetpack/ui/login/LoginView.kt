@@ -223,7 +223,9 @@ fun signIn(account: GoogleSignInAccount,
 //                    snackbarScope.launch {
 //                        onError(snackbarHostState, "DEBUG: Got ${response.body()?.get(0)?.firstName} ${response.body()?.get(0)?.lastName}!")
 //                    }
-                    navHostController?.navigate(Screen.InterestsSetup.route)
+                    navHostController?.navigate(
+                        "${Screen.InterestsSetup.route}/${response.body()?.get(0)?.id}"
+                    )
                 }
             }
             else {
