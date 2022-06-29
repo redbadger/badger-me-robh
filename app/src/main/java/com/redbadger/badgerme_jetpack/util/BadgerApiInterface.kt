@@ -10,12 +10,15 @@ interface BadgerApiInterface {
         @Query("email") email: String
     ): Response<List<BadgerUser>>
 
-    @GET("users/{id}")
-    suspend fun getUserById()
-
     @POST("users")
     suspend fun addUser (
         @Header("authorization") token: String,
         @Query("email") email: String
-    ): Response<String>
+    ): Response<BadgerUser>
+
+    @PATCH("users/{id}")
+    suspend fun updateUserInterests(
+        @Path("id") id: String,
+        @Body interestIds: List<String>
+    ): Response<Void>
 }
