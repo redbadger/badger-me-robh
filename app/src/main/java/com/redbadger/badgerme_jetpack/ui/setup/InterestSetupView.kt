@@ -4,119 +4,144 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.redbadger.badgerme_jetpack.R
 import com.redbadger.badgerme_jetpack.navigation.Screen
 import com.redbadger.badgerme_jetpack.ui.theme.BadgerMe_JetpackTheme
+import com.redbadger.badgerme_jetpack.util.BadgerApiInterface
+import com.redbadger.badgerme_jetpack.util.RetrofitHelper
+import kotlinx.coroutines.*
 
 @Composable
-fun InterestSetupView(navHostController: NavHostController?, userId: String?) {
+fun InterestSetupView(
+    navHostController: NavHostController?,
+    userId: String?,
+    viewModel: InterestSetupViewModel = viewModel()
+) {
     val snackbarScope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
-    val food = remember { mutableStateOf(false) }
-    val drinks = remember { mutableStateOf(false) }
-    val coffee = remember { mutableStateOf(false) }
-    val chats = remember { mutableStateOf(false) }
-    val walks = remember { mutableStateOf(false) }
-    val hugs = remember { mutableStateOf(false) }
-
-    Box {
-        Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Top) {
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                Text(
-                    text = "What are you interested in?",
-                    style = MaterialTheme.typography.h1,
-                    modifier = Modifier.padding(horizontal = 30.dp, vertical = 20.dp),
-                    textAlign = TextAlign.Center
-                )
+    if(viewModel.interests.isEmpty()) {
+        Box {
+            Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    CircularProgressIndicator()
+                }
             }
         }
-        Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                MultiselectInterest(
-                    painter = painterResource(id = R.drawable.property_1_food),
-                    name = "Food",
-                    ticked = food
-                )
-                Spacer(modifier = Modifier.padding(8.dp))
-                MultiselectInterest(
-                    painter = painterResource(id = R.drawable.property_1_drinks),
-                    name = "Drinks",
-                    ticked = drinks
-                )
-            }
-            Spacer(modifier = Modifier.padding(8.dp))
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                MultiselectInterest(
-                    painter = painterResource(id = R.drawable.property_1_coffee),
-                    name = "Coffee",
-                    ticked = coffee
-                )
-                Spacer(modifier = Modifier.padding(8.dp))
-                MultiselectInterest(
-                    painter = painterResource(id = R.drawable.property_1_chats),
-                    name = "Chats",
-                    ticked = chats
-                )
-            }
-            Spacer(modifier = Modifier.padding(8.dp))
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                MultiselectInterest(
-                    painter = painterResource(id = R.drawable.property_1_walks),
-                    name = "Walks",
-                    ticked = walks
-                )
-                Spacer(modifier = Modifier.padding(8.dp))
-                MultiselectInterest(
-                    painter = painterResource(id = R.drawable.property_1_hugs),
-                    name = "Hugs",
-                    ticked = hugs
-                )
-            }
-        }
-        Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom) {
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                Button(
-                    shape = RoundedCornerShape(size = 60.dp),
-                    onClick = {
-                        /* TODO */
-                        val interests = mapOf(
-                            "food" to food,
-                            "drinks" to drinks,
-                            "coffee" to coffee,
-                            "chats" to chats,
-                            "walks" to walks,
-                            "hugs" to hugs
-                        )
-                        navHostController?.navigate(Screen.ProfileSetup.route)
-                    },
-                    enabled = food.value or drinks.value or coffee.value
-                            or chats.value or walks.value or hugs.value,
-                    modifier = Modifier
-                        .wrapContentHeight()
-                        .fillMaxWidth()
-                        .padding(14.dp)
+    }
+    else {
+        Box {
+            Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Top) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = "Continue",
-                        modifier = Modifier.padding(vertical = 10.dp),
-                        style = MaterialTheme.typography.button
+                        text = "What are you interested in?",
+                        style = MaterialTheme.typography.h1,
+                        modifier = Modifier.padding(horizontal = 30.dp, vertical = 20.dp),
+                        textAlign = TextAlign.Center
                     )
+                }
+            }
+            Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    MultiselectInterest(
+                        painter = painterResource(id = R.drawable.property_1_food),
+                        name = "Food",
+                        ticked = viewModel.interests["food"]?.interested!!
+                    )
+                    Spacer(modifier = Modifier.padding(8.dp))
+                    MultiselectInterest(
+                        painter = painterResource(id = R.drawable.property_1_drinks),
+                        name = "Drinks",
+                        ticked = viewModel.interests["drinks"]?.interested!!
+                    )
+                }
+                Spacer(modifier = Modifier.padding(8.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    MultiselectInterest(
+                        painter = painterResource(id = R.drawable.property_1_coffee),
+                        name = "Coffee",
+                        ticked = viewModel.interests["coffee"]?.interested!!
+                    )
+                    Spacer(modifier = Modifier.padding(8.dp))
+                    MultiselectInterest(
+                        painter = painterResource(id = R.drawable.property_1_chats),
+                        name = "Chats",
+                        ticked = viewModel.interests["chats"]?.interested!!
+                    )
+                }
+                Spacer(modifier = Modifier.padding(8.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    MultiselectInterest(
+                        painter = painterResource(id = R.drawable.property_1_walks),
+                        name = "Walks",
+                        ticked = viewModel.interests["walks"]?.interested!!
+                    )
+                    Spacer(modifier = Modifier.padding(8.dp))
+                    MultiselectInterest(
+                        painter = painterResource(id = R.drawable.property_1_hugs),
+                        name = "Hugs",
+                        ticked = viewModel.interests["hugs"]?.interested!!
+                    )
+                }
+            }
+            Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Button(
+                        shape = RoundedCornerShape(size = 60.dp),
+                        onClick = {
+                            updateInterests(
+                                userId!!,
+                                viewModel.interests,
+                                snackbarHostState,
+                                snackbarScope,
+                                navHostController
+                            )
+                        },
+                        enabled = viewModel.interests["food"]?.interested!!.value
+                                or viewModel.interests["drinks"]?.interested!!.value
+                                or viewModel.interests["coffee"]?.interested!!.value
+                                or viewModel.interests["chats"]?.interested!!.value
+                                or viewModel.interests["walks"]?.interested!!.value
+                                or viewModel.interests["hugs"]?.interested!!.value,
+                        modifier = Modifier
+                            .wrapContentHeight()
+                            .fillMaxWidth()
+                            .padding(14.dp)
+                    ) {
+                        Text(
+                            text = "Continue",
+                            modifier = Modifier.padding(vertical = 10.dp),
+                            style = MaterialTheme.typography.button
+                        )
+                    }
                 }
             }
         }
@@ -184,10 +209,46 @@ fun MultiselectInterest(painter: Painter, name: String, ticked: MutableState<Boo
     }
 }
 
+fun updateInterests(
+    userId: String,
+    interests: MutableMap<String, InterestSetupViewModel.TrackedInterest>,
+    snackbarHostState: SnackbarHostState,
+    snackbarScope: CoroutineScope,
+    navHostController: NavHostController?) {
+    val badgerApi = RetrofitHelper.getInstance().create(BadgerApiInterface::class.java)
+    val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        snackbarScope.launch {
+            onError(snackbarHostState, "Exception: ${throwable.localizedMessage}")
+        }
+    }
+    val userInterests = mutableListOf<String>()
+    interests.forEach {
+        if (it.value.interested.value) {
+            userInterests.add(it.value.interestId)
+        }
+    }
+    CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+        val response = badgerApi.updateUserInterests(userId, userInterests)
+        withContext(Dispatchers.Main) {
+            if (response.isSuccessful) {
+                onError(snackbarHostState, "SUCCESS")
+                navHostController?.navigate("${Screen.ProfileSetup.route}/${userId}")
+            }
+            else {
+                onError(snackbarHostState, "ERROR: ${response.code()}")
+            }
+        }
+    }
+}
+
+private suspend fun onError(snackbarHostState: SnackbarHostState, errorMessage: String) {
+    snackbarHostState.showSnackbar(errorMessage)
+}
+
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun DefaultPreview() {
     BadgerMe_JetpackTheme {
-        InterestSetupView(null)
+        InterestSetupView(null, "1")
     }
 }

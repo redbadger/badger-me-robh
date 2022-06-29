@@ -21,4 +21,7 @@ interface BadgerApiInterface {
         @Path("id") id: String,
         @Body interestIds: List<String>
     ): Response<Void>
+
+    @GET("interests")
+    suspend fun getInterests(): Response<List<BadgerInterest>>
 }

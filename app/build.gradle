@@ -60,6 +60,7 @@ dependencies {
     implementation "androidx.datastore:datastore:1.0.0"
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.1'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.4.1'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.1'
     implementation 'androidx.activity:activity-compose:1.4.0'
     implementation 'com.google.android.gms:play-services-auth:20.2.0'
