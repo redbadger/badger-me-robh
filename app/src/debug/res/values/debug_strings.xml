@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="api_url">https://my-json-server.typicode.com/robhannan/mock-badger-api/</string>
+</resources>
