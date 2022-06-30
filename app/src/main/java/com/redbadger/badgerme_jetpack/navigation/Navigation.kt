@@ -20,7 +20,7 @@ fun NavigationHost() {
             InterestSetupView(navController, backStackEntry.arguments?.getString("userId"))
          }
         composable(Screen.ProfileSetup.route + "/{userId}") { backStackEntry ->
-            ProfileSetupView(navController, backStackEntry.arguments?.getString("userId"))
+            ProfileSetupView(navController, backStackEntry.arguments?.getString("userId")!!)
         }
         composable(Screen.Events.route + "/{userId}") { backStackEntry ->
             BadgerEventsView(navController, backStackEntry.arguments?.getString("userId"))

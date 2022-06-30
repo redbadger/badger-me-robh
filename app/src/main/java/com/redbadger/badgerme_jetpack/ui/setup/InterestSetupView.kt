@@ -231,7 +231,6 @@ fun updateInterests(
         val response = badgerApi.updateUserInterests(userId, userInterests)
         withContext(Dispatchers.Main) {
             if (response.isSuccessful) {
-                onError(snackbarHostState, "SUCCESS")
                 navHostController?.navigate("${Screen.ProfileSetup.route}/${userId}")
             }
             else {

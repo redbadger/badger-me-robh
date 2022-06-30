@@ -16,6 +16,11 @@ interface BadgerApiInterface {
         @Query("email") email: String
     ): Response<BadgerUser>
 
+    @GET("users/{id}")
+    suspend fun getUser(
+        @Path("id") id: String
+    ): Response<BadgerUser>
+
     @PATCH("users/{id}")
     suspend fun updateUserInterests(
         @Path("id") id: String,
