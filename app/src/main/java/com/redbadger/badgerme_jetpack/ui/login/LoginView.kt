@@ -17,6 +17,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -28,31 +29,52 @@ import com.redbadger.badgerme_jetpack.navigation.Screen
 import com.redbadger.badgerme_jetpack.ui.Title
 import com.redbadger.badgerme_jetpack.ui.theme.BadgerMe_JetpackTheme
 import com.redbadger.badgerme_jetpack.util.BadgerApiInterface
-import com.redbadger.badgerme_jetpack.util.BadgerUser
 import com.redbadger.badgerme_jetpack.util.RetrofitHelper
 import kotlinx.coroutines.*
 
 
 @Composable
-fun LoginView(navHostController: NavHostController?) {
+fun LoginView(navHostController: NavHostController?, viewModel: LoginViewModel = viewModel()) {
     val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
         .requestIdToken(LocalContext.current.getString(R.string.gsp_id_web))
         .requestEmail()
         .build()
 
-    Box {
-        Column (modifier = Modifier
-            .fillMaxSize()
-            .padding(top = 30.dp), verticalArrangement = Arrangement.Top) {
-            Title()
+    if (viewModel.loading.value) {
+        Box {
+            Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
         }
-        Column (modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
-            Icons()
-        }
-        Column (modifier = Modifier
-            .fillMaxSize()
-            .padding(bottom = 30.dp), verticalArrangement = Arrangement.Bottom) {
-            SignInButton(GoogleSignIn.getClient(LocalContext.current, gso), navHostController)
+    }
+    else {
+        Box {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 30.dp), verticalArrangement = Arrangement.Top
+            ) {
+                Title()
+            }
+            Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
+                Icons()
+            }
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 30.dp), verticalArrangement = Arrangement.Bottom
+            ) {
+                SignInButton(
+                    GoogleSignIn.getClient(LocalContext.current, gso),
+                    navHostController,
+                    viewModel
+                )
+            }
         }
     }
 }
@@ -121,7 +143,11 @@ fun Icons() {
 }
 
 @Composable
-fun SignInButton(googleSignInClient: GoogleSignInClient?, navHostController: NavHostController?) {
+fun SignInButton(
+    googleSignInClient: GoogleSignInClient?,
+    navHostController: NavHostController?,
+    viewModel: LoginViewModel
+) {
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -132,7 +158,14 @@ fun SignInButton(googleSignInClient: GoogleSignInClient?, navHostController: Nav
                 if (result.data != null) {
                     val task: Task<GoogleSignInAccount> =
                         GoogleSignIn.getSignedInAccountFromIntent(intent)
-                    signIn(account = task.result, navHostController = navHostController, snackbarHostState, scope, false)
+                    signIn(
+                        account = task.result,
+                        navHostController = navHostController,
+                        snackbarHostState,
+                        scope,
+                        true,
+                        viewModel
+                    )
                 }
                 else {
                     scope.launch{
@@ -167,7 +200,8 @@ fun register (
     account: GoogleSignInAccount,
     navHostController: NavHostController?,
     snackbarHostState: SnackbarHostState,
-    snackbarScope: CoroutineScope
+    snackbarScope: CoroutineScope,
+    viewModel: LoginViewModel
 ) {
     val badgerApi = RetrofitHelper.getInstance().create(BadgerApiInterface::class.java)
     val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
@@ -185,7 +219,7 @@ fun register (
                 snackbarScope.launch {
                     onError(snackbarHostState, response.message().ifEmpty { "Registration success! Proceeding to sign in..." })
                 }
-                signIn(account, navHostController, snackbarHostState, snackbarScope, true)
+                signIn(account, navHostController, snackbarHostState, snackbarScope, true, viewModel)
             } else
             {
                 println(response.errorBody().toString())
@@ -201,13 +235,15 @@ fun signIn(account: GoogleSignInAccount,
            navHostController: NavHostController?,
            snackbarHostState: SnackbarHostState,
            snackbarScope: CoroutineScope,
-           newUser: Boolean) {
+           newUser: Boolean,
+           viewModel: LoginViewModel) {
     val badgerApi = RetrofitHelper.getInstance().create(BadgerApiInterface::class.java)
     val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         snackbarScope.launch {
             onError(snackbarHostState, "Exception: ${throwable.localizedMessage}")
         }
     }
+    viewModel.loading.value = true
 
     CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
         val response = badgerApi.getUserByEmail("Bearer ${account.idToken!!}", account.email!!)
@@ -218,7 +254,7 @@ fun signIn(account: GoogleSignInAccount,
                     snackbarScope.launch {
                         onError(snackbarHostState, "DEBUG: No matching Badgers found - proceeding to register...")
                     }
-                    register(account, navHostController, snackbarHostState, snackbarScope)
+                    register(account, navHostController, snackbarHostState, snackbarScope, viewModel)
                 }
                 else {
 //                    snackbarScope.launch {
@@ -242,6 +278,7 @@ fun signIn(account: GoogleSignInAccount,
                     onError(snackbarHostState, response.message().ifEmpty { "Error! Response code ${response.code()}" })
                 }
             }
+            viewModel.loading.value = false
         }
     }
 }
