@@ -112,7 +112,7 @@ fun ProfileSetupView(
                             value = bio.value,
                             onValueChange = { if (it.length <= 200) {bio.value = it} },
                             placeholder = { Text("For example: I like Piña Coladas in the rain") },
-                            modifier = Modifier.height(180.dp)
+                            modifier = Modifier.height(180.dp).fillMaxWidth()
                         )
                     }
                 }
