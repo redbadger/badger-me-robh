@@ -163,7 +163,7 @@ fun SignInButton(
                         navHostController = navHostController,
                         snackbarHostState,
                         scope,
-                        true,
+                        false,
                         viewModel
                     )
                 }
@@ -219,7 +219,14 @@ fun register (
                 snackbarScope.launch {
                     onError(snackbarHostState, response.message().ifEmpty { "Registration success! Proceeding to sign in..." })
                 }
-                signIn(account, navHostController, snackbarHostState, snackbarScope, true, viewModel)
+                signIn(
+                    account,
+                    navHostController,
+                    snackbarHostState,
+                    snackbarScope,
+                    true,
+                    viewModel
+                )
             } else
             {
                 println(response.errorBody().toString())
@@ -262,7 +269,9 @@ fun signIn(account: GoogleSignInAccount,
 //                    }
                     if (newUser) {
                         navHostController?.navigate(
-                            "${Screen.InterestsSetup.route}/${response.body()?.get(0)?.id}/Bearer ${account.idToken!!}"
+                            "${Screen.InterestsSetup.route}/" +
+                                    "${response.body()?.get(0)?.id}/" +
+                                    "Bearer ${account.idToken!!}"
                         )
                     }
                     else {
