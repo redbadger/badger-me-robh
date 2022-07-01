@@ -262,12 +262,12 @@ fun signIn(account: GoogleSignInAccount,
 //                    }
                     if (newUser) {
                         navHostController?.navigate(
-                            "${Screen.InterestsSetup.route}/${response.body()?.get(0)?.id}"
+                            "${Screen.InterestsSetup.route}/${response.body()?.get(0)?.id}/Bearer ${account.idToken!!}"
                         )
                     }
                     else {
                         navHostController?.navigate(
-                            "${Screen.Events.route}/${response.body()?.get(0)?.id}"
+                            "${Screen.Events.route}/${response.body()?.get(0)?.id}/Bearer ${account.idToken!!}"
                         )
                     }
                 }

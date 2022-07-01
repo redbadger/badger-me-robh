@@ -16,14 +16,26 @@ fun NavigationHost() {
     NavHost(navController = navController, startDestination = Screen.Login.route) {
         composable(Screen.Splash.route) { SplashView(navController)}
         composable(Screen.Login.route) { LoginView(navController) }
-        composable(Screen.InterestsSetup.route + "/{userId}") { backStackEntry ->
-            InterestSetupView(navController, backStackEntry.arguments?.getString("userId"))
-         }
-        composable(Screen.ProfileSetup.route + "/{userId}") { backStackEntry ->
-            ProfileSetupView(navController, backStackEntry.arguments?.getString("userId")!!)
+        composable(Screen.InterestsSetup.route + "/{userId}"+ "/{authToken}") {
+            InterestSetupView(
+                navController,
+                it.arguments?.getString("userId")!!,
+                it.arguments?.getString("authToken")!!
+            )
         }
-        composable(Screen.Events.route + "/{userId}") { backStackEntry ->
-            BadgerEventsView(navController, backStackEntry.arguments?.getString("userId"))
+        composable(Screen.ProfileSetup.route + "/{userId}"+ "/{authToken}") {
+            ProfileSetupView(
+                navController,
+                it.arguments?.getString("userId")!!,
+                it.arguments?.getString("authToken")!!
+            )
+        }
+        composable(Screen.Events.route + "/{userId}"+ "/{authToken}") {
+            BadgerEventsView(
+                navController,
+                it.arguments?.getString("userId")!!,
+                it.arguments?.getString("authToken")!!
+            )
         }
 
     }

@@ -24,14 +24,16 @@ import kotlinx.coroutines.*
 @Composable
 fun InterestSetupView(
     navHostController: NavHostController?,
-    userId: String?,
+    userId: String,
+    authToken: String,
     viewModel: InterestSetupViewModel = viewModel()
 ) {
     val snackbarScope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
+    val loaded = remember { mutableStateOf(false) }
 
-    if(viewModel.interests.isEmpty()) {
-        viewModel.getInterests()
+    if(!loaded.value) {
+        viewModel.getInterests(authToken, loaded)
         Box {
             Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
                 Row(
@@ -66,13 +68,13 @@ fun InterestSetupView(
                     MultiselectInterest(
                         painter = painterResource(id = R.drawable.property_1_food),
                         name = "Food",
-                        ticked = viewModel.interests["food"]?.interested!!
+                        ticked = viewModel.interests["Food"]?.interested!!
                     )
                     Spacer(modifier = Modifier.padding(8.dp))
                     MultiselectInterest(
                         painter = painterResource(id = R.drawable.property_1_drinks),
                         name = "Drinks",
-                        ticked = viewModel.interests["drinks"]?.interested!!
+                        ticked = viewModel.interests["Drinks"]?.interested!!
                     )
                 }
                 Spacer(modifier = Modifier.padding(8.dp))
@@ -83,13 +85,13 @@ fun InterestSetupView(
                     MultiselectInterest(
                         painter = painterResource(id = R.drawable.property_1_coffee),
                         name = "Coffee",
-                        ticked = viewModel.interests["coffee"]?.interested!!
+                        ticked = viewModel.interests["Coffee"]?.interested!!
                     )
                     Spacer(modifier = Modifier.padding(8.dp))
                     MultiselectInterest(
                         painter = painterResource(id = R.drawable.property_1_chats),
                         name = "Chats",
-                        ticked = viewModel.interests["chats"]?.interested!!
+                        ticked = viewModel.interests["Chats"]?.interested!!
                     )
                 }
                 Spacer(modifier = Modifier.padding(8.dp))
@@ -100,13 +102,13 @@ fun InterestSetupView(
                     MultiselectInterest(
                         painter = painterResource(id = R.drawable.property_1_walks),
                         name = "Walks",
-                        ticked = viewModel.interests["walks"]?.interested!!
+                        ticked = viewModel.interests["Walks"]?.interested!!
                     )
                     Spacer(modifier = Modifier.padding(8.dp))
                     MultiselectInterest(
                         painter = painterResource(id = R.drawable.property_1_hugs),
                         name = "Hugs",
-                        ticked = viewModel.interests["hugs"]?.interested!!
+                        ticked = viewModel.interests["Hugs"]?.interested!!
                     )
                 }
             }
@@ -119,19 +121,20 @@ fun InterestSetupView(
                         shape = RoundedCornerShape(size = 60.dp),
                         onClick = {
                             updateInterests(
-                                userId!!,
+                                authToken,
+                                userId,
                                 viewModel.interests,
                                 snackbarHostState,
                                 snackbarScope,
                                 navHostController
                             )
                         },
-                        enabled = viewModel.interests["food"]?.interested!!.value
-                                or viewModel.interests["drinks"]?.interested!!.value
-                                or viewModel.interests["coffee"]?.interested!!.value
-                                or viewModel.interests["chats"]?.interested!!.value
-                                or viewModel.interests["walks"]?.interested!!.value
-                                or viewModel.interests["hugs"]?.interested!!.value,
+                        enabled = viewModel.interests["Food"]?.interested!!.value
+                                or viewModel.interests["Drinks"]?.interested!!.value
+                                or viewModel.interests["Coffee"]?.interested!!.value
+                                or viewModel.interests["Chats"]?.interested!!.value
+                                or viewModel.interests["Walks"]?.interested!!.value
+                                or viewModel.interests["Hugs"]?.interested!!.value,
                         modifier = Modifier
                             .wrapContentHeight()
                             .fillMaxWidth()
@@ -211,6 +214,7 @@ fun MultiselectInterest(painter: Painter, name: String, ticked: MutableState<Boo
 }
 
 fun updateInterests(
+    authToken: String,
     userId: String,
     interests: MutableMap<String, InterestSetupViewModel.TrackedInterest>,
     snackbarHostState: SnackbarHostState,
@@ -229,10 +233,10 @@ fun updateInterests(
         }
     }
     CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-        val response = badgerApi.updateUserInterests(userId, userInterests)
+        val response = badgerApi.updateUserInterests(authToken, userId, userInterests)
         withContext(Dispatchers.Main) {
             if (response.isSuccessful) {
-                navHostController?.navigate("${Screen.ProfileSetup.route}/${userId}")
+                navHostController?.navigate("${Screen.ProfileSetup.route}/${userId}/${authToken}")
             }
             else {
                 onError(snackbarHostState, "ERROR: ${response.code()}")
@@ -249,6 +253,6 @@ private suspend fun onError(snackbarHostState: SnackbarHostState, errorMessage: 
 @Composable
 fun DefaultPreview() {
     BadgerMe_JetpackTheme {
-        InterestSetupView(null, "1")
+        InterestSetupView(null, "1", "token")
     }
 }

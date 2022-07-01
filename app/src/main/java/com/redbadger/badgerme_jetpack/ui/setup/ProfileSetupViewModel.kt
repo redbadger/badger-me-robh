@@ -11,9 +11,9 @@ import kotlinx.coroutines.launch
 class ProfileSetupViewModel: ViewModel()  {
     private val badgerApi = RetrofitHelper.getInstance().create(BadgerApiInterface::class.java)
     val user = mutableStateOf(BadgerUser(null, "", "", ""))
-    fun getUser(userId: String){
+    fun getUser(userId: String, authToken: String){
         viewModelScope.launch {
-            val response = badgerApi.getUser(userId)
+            val response = badgerApi.getUser(authToken, userId)
             if (response.isSuccessful) {
                 user.value = response.body()!!
             }

@@ -23,12 +23,13 @@ import com.redbadger.badgerme_jetpack.ui.theme.BadgerMe_JetpackTheme
 fun ProfileSetupView(
     navHostController: NavHostController?,
     userId: String,
+    authToken: String,
     viewModel: ProfileSetupViewModel = viewModel()
 ) {
     val bio = remember { mutableStateOf("") }
 
     if(viewModel.user.value.id.isNullOrBlank()) {
-        viewModel.getUser(userId)
+        viewModel.getUser(userId, authToken)
         Box {
             Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
                 Row(
@@ -128,7 +129,7 @@ fun ProfileSetupView(
                         onClick = {
                           /* TODO: There doesn't actually seem to be an endpoint to send this info to */
                             navHostController?.navigate(
-                                "${Screen.Events.route}/${userId}"
+                                "${Screen.Events.route}/${userId}/${authToken}"
                             )
                         },
                         enabled = bio.value.isNotBlank(),
@@ -154,6 +155,6 @@ fun ProfileSetupView(
 @Composable
 fun ProfilePreview() {
     BadgerMe_JetpackTheme {
-        ProfileSetupView( null, "1" )
+        ProfileSetupView( null, "1", "token" )
     }
 }

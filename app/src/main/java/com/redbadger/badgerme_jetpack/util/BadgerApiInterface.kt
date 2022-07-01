@@ -18,15 +18,25 @@ interface BadgerApiInterface {
 
     @GET("users/{id}")
     suspend fun getUser(
+        @Header("authorization") token: String,
         @Path("id") id: String
     ): Response<BadgerUser>
 
     @PATCH("users/{id}")
     suspend fun updateUserInterests(
+        @Header("authorization") token: String,
         @Path("id") id: String,
         @Body interestIds: List<String>
     ): Response<Void>
 
     @GET("interests")
-    suspend fun getInterests(): Response<List<BadgerInterest>>
+    suspend fun getInterests(
+        @Header("authorization") token: String
+    ): Response<List<BadgerInterest>>
+
+    @POST("interests")
+    suspend fun addInterest(
+        @Header("authorization") token: String,
+        @Body interest: BadgerInterest
+    ): Response<Void>
 }

@@ -14,13 +14,35 @@ class InterestSetupViewModel(): ViewModel() {
     private val badgerApi = RetrofitHelper.getInstance().create(BadgerApiInterface::class.java)
     val interests =  mutableMapOf<String, TrackedInterest>()
 
-    fun getInterests() {
+    fun setInterests(authToken: String) {
         viewModelScope.launch {
-            val response = badgerApi.getInterests()
+            badgerApi.addInterest(authToken, BadgerInterest("", "Food"))
+        }
+        viewModelScope.launch {
+            badgerApi.addInterest(authToken, BadgerInterest("", "Drinks"))
+        }
+        viewModelScope.launch {
+            badgerApi.addInterest(authToken, BadgerInterest("", "Coffee"))
+        }
+        viewModelScope.launch {
+            badgerApi.addInterest(authToken, BadgerInterest("", "Walks"))
+        }
+        viewModelScope.launch {
+            badgerApi.addInterest(authToken, BadgerInterest("", "Hugs"))
+        }
+        viewModelScope.launch {
+            badgerApi.addInterest(authToken, BadgerInterest("", "Chats"))
+        }
+    }
+
+    fun getInterests(authToken: String, completed: MutableState<Boolean>) {
+        viewModelScope.launch {
+            val response = badgerApi.getInterests(authToken)
             if (response.isSuccessful) {
                 response.body()!!.forEach{
-                    interests[it.name] = TrackedInterest(it.interestId, mutableStateOf(false))
+                    interests[it.name] = TrackedInterest(it.id, mutableStateOf(false))
                 }
+                completed.value = true
             }
         }
     }
