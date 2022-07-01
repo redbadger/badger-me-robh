@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.redbadger.badgerme_jetpack.R
+import com.redbadger.badgerme_jetpack.navigation.Screen
 import com.redbadger.badgerme_jetpack.ui.theme.BadgerMe_JetpackTheme
 
 @Composable
@@ -125,7 +126,10 @@ fun ProfileSetupView(
                     Button(
                         shape = RoundedCornerShape(size = 60.dp),
                         onClick = {
-                            /* TODO */
+                          /* TODO: There doesn't actually seem to be an endpoint to send this info to */
+                            navHostController?.navigate(
+                                "${Screen.Events.route}/${userId}"
+                            )
                         },
                         enabled = bio.value.isNotBlank(),
                         modifier = Modifier
