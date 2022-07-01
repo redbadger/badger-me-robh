@@ -31,6 +31,7 @@ fun InterestSetupView(
     val snackbarHostState = remember { SnackbarHostState() }
 
     if(viewModel.interests.isEmpty()) {
+        viewModel.getInterests()
         Box {
             Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
                 Row(

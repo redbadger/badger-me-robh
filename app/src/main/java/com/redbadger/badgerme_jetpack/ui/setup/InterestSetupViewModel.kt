@@ -14,7 +14,7 @@ class InterestSetupViewModel(): ViewModel() {
     private val badgerApi = RetrofitHelper.getInstance().create(BadgerApiInterface::class.java)
     val interests =  mutableMapOf<String, TrackedInterest>()
 
-    init {
+    fun getInterests() {
         viewModelScope.launch {
             val response = badgerApi.getInterests()
             if (response.isSuccessful) {
