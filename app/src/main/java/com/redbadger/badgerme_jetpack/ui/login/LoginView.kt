@@ -273,12 +273,11 @@ fun signIn(account: GoogleSignInAccount,
                 }
             }
             else {
-                println(response.errorBody().toString())
+                viewModel.loading.value = false
                 snackbarScope.launch {
                     onError(snackbarHostState, response.message().ifEmpty { "Error! Response code ${response.code()}" })
                 }
             }
-            viewModel.loading.value = false
         }
     }
 }
