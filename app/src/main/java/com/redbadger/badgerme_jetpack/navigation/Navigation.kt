@@ -13,7 +13,7 @@ import com.redbadger.badgerme_jetpack.ui.splash.SplashView
 @Composable
 fun NavigationHost() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = Screen.Login.route) {
+    NavHost(navController = navController, startDestination = Screen.Splash.route) {
         composable(Screen.Splash.route) { SplashView(navController)}
         composable(Screen.Login.route) { LoginView(navController) }
         composable(Screen.InterestsSetup.route + "/{userId}"+ "/{authToken}") {
