@@ -59,6 +59,11 @@ fun BadgerEventsView(navHostController: NavHostController?, userId: String?, aut
                     }
                 }
             }
+            Row {
+                Column(modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Top) {
+                    EventsList()
+                }
+            }
         }
     }
 }
