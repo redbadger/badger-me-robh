@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.redbadger.badgerme_jetpack.R
 import com.redbadger.badgerme_jetpack.ui.theme.BadgerMe_JetpackTheme
 
@@ -20,7 +21,7 @@ fun EventsList() {
                 contentDescription = "Sweat emoji"
             )
         }
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+        Row(Modifier.fillMaxWidth().padding(top = 16.dp), horizontalArrangement = Arrangement.Center) {
             Text(text = "Nothing to see here...", style = MaterialTheme.typography.button)
         }
     }
