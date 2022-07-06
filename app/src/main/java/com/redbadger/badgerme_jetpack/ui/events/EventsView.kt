@@ -109,20 +109,20 @@ fun BadgerEventsView(
                         getEvents().filter {
                             when (viewModel.timeFilter.value) {
                                 "Today" -> {
-                                    viewModel.tomorrow.value = false
-                                    viewModel.thisWeek.value = false
-                                    viewModel.nextWeek.value = false
-                                    viewModel.later.value = false
+                                    viewModel.tomorrow.value = -1
+                                    viewModel.thisWeek.value = -1
+                                    viewModel.nextWeek.value = -1
+                                    viewModel.later.value = -1
 
                                     LocalDateTime
                                         .parse(it.startTime).toLocalDate()
                                         .isEqual(LocalDate.now())
                                 }
                                 "Upcoming" -> {
-                                    viewModel.tomorrow.value = false
-                                    viewModel.thisWeek.value = false
-                                    viewModel.nextWeek.value = false
-                                    viewModel.later.value = false
+                                    viewModel.tomorrow.value = -1
+                                    viewModel.thisWeek.value = -1
+                                    viewModel.nextWeek.value = -1
+                                    viewModel.later.value = -1
 
                                     LocalDateTime
                                         .parse(it.startTime).toLocalDate()

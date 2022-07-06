@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModel
 
 class EventsViewModel: ViewModel() {
     val timeFilter = mutableStateOf("Today")
-    val tomorrow = mutableStateOf(false)
-    val thisWeek = mutableStateOf(false)
-    val nextWeek = mutableStateOf(false)
-    val later = mutableStateOf(false)
+    val tomorrow = mutableStateOf(-1)
+    val thisWeek = mutableStateOf(-1)
+    val nextWeek = mutableStateOf(-1)
+    val later = mutableStateOf(-1)
 }

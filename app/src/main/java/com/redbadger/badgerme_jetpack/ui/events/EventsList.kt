@@ -61,14 +61,14 @@ fun EventsList(events: List<BadgerEvent>, currentUser: BadgerUser, viewModel: Ev
                                 if (LocalDateTime.parse(event.startTime).toLocalDate()
                                         .isEqual(LocalDate.now().plusDays(1))
                                 ) {
-                                    if (viewModel.timeFilter.value != "Today" && viewModel.tomorrow.value) {
+                                    if (viewModel.tomorrow.value == -1) viewModel.tomorrow.value = index
+                                    if (viewModel.timeFilter.value != "Today" && viewModel.tomorrow.value == index) {
                                         Text(
                                             modifier = Modifier.padding(top = 8.dp),
                                             text = "Tomorrow",
                                             style = MaterialTheme.typography.h4
                                         )
                                     }
-                                    viewModel.tomorrow.value = true
                                     Row(Modifier.padding(top = 8.dp)) {
                                         EventCard(event, currentUser)
                                     }
@@ -90,14 +90,14 @@ fun EventsList(events: List<BadgerEvent>, currentUser: BadgerUser, viewModel: Ev
                                         .parse(event.startTime).toLocalDate()
                                         .isEqual(LocalDate.now().plusDays(1))
                                 ) {
-                                    if (viewModel.timeFilter.value != "Today" && viewModel.thisWeek.value) {
+                                    if (viewModel.thisWeek.value == -1) viewModel.thisWeek.value = index
+                                    if (viewModel.timeFilter.value != "Today" && viewModel.thisWeek.value == index) {
                                         Text(
                                             modifier = Modifier.padding(top = 8.dp),
                                             text = "This week",
                                             style = MaterialTheme.typography.h4
                                         )
                                     }
-                                    viewModel.thisWeek.value = true
                                     Row(Modifier.padding(top = 8.dp)) {
                                         EventCard(event, currentUser)
                                     }
@@ -116,14 +116,14 @@ fun EventsList(events: List<BadgerEvent>, currentUser: BadgerUser, viewModel: Ev
                                             .weekOfWeekBasedYear()
                                     )
                                 if (eventWeek == currentWeek + 1) {
-                                    if (viewModel.timeFilter.value != "Today" && viewModel.nextWeek.value) {
+                                    if (viewModel.nextWeek.value == -1) viewModel.nextWeek.value = index
+                                    if (viewModel.timeFilter.value != "Today" && viewModel.nextWeek.value == index) {
                                         Text(
                                             modifier = Modifier.padding(top = 8.dp),
                                             text = "Next week",
                                             style = MaterialTheme.typography.h4
                                         )
                                     }
-                                    viewModel.nextWeek.value = true
                                     Row(Modifier.padding(top = 8.dp)) {
                                         EventCard(event, currentUser)
                                     }
@@ -142,14 +142,14 @@ fun EventsList(events: List<BadgerEvent>, currentUser: BadgerUser, viewModel: Ev
                                             .weekOfWeekBasedYear()
                                     )
                                 if (eventWeek > currentWeek + 1) {
-                                    if (viewModel.timeFilter.value != "Today" && viewModel.later.value) {
+                                    if (viewModel.later.value == -1) viewModel.later.value = index
+                                    if (viewModel.timeFilter.value != "Today" && viewModel.later.value == index) {
                                         Text(
                                             modifier = Modifier.padding(top = 8.dp),
                                             text = "Later",
                                             style = MaterialTheme.typography.h4
                                         )
                                     }
-                                    viewModel.later.value = true
                                     Row(Modifier.padding(top = 8.dp)) {
                                         EventCard(event, currentUser)
                                     }
