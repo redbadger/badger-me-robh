@@ -109,11 +109,21 @@ fun BadgerEventsView(
                         getEvents().filter {
                             when (viewModel.timeFilter.value) {
                                 "Today" -> {
+                                    viewModel.tomorrow.value = false
+                                    viewModel.thisWeek.value = false
+                                    viewModel.nextWeek.value = false
+                                    viewModel.later.value = false
+
                                     LocalDateTime
                                         .parse(it.startTime).toLocalDate()
                                         .isEqual(LocalDate.now())
                                 }
                                 "Upcoming" -> {
+                                    viewModel.tomorrow.value = false
+                                    viewModel.thisWeek.value = false
+                                    viewModel.nextWeek.value = false
+                                    viewModel.later.value = false
+
                                     LocalDateTime
                                         .parse(it.startTime).toLocalDate()
                                         .isAfter(LocalDate.now())
@@ -126,7 +136,8 @@ fun BadgerEventsView(
                         "Hugh",
                         "Mann",
                         "hugh.mann@red-badger.com"
-                        )
+                        ),
+                        viewModel
                     )
                 }
             }
@@ -170,7 +181,7 @@ fun getEvents(): List<BadgerEvent> {
             ),
             listOf(),
             listOf(BadgerInterest("1", "Coffee")),
-            "2022-07-20T12:00:00","2022-07-20T15:00:00"
+            "2022-07-07T12:00:00","2022-07-20T15:00:00"
         ),
         BadgerEvent(
             "Mixed event",
