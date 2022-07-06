@@ -136,7 +136,7 @@ fun PreviewEventCard() {
                         "1",
                         "Hugh",
                         "Mann",
-                        "hugh.mann@red-badger.com"
+                        "hugh.mann@red-badger.com",
                     ),
                     listOf(
                         BadgerUser(
@@ -152,7 +152,8 @@ fun PreviewEventCard() {
                             "andy.noether@red-badger.com"
                         )
                     ),
-                    listOf(BadgerInterest("1", "Food"))
+                    listOf(BadgerInterest("1", "Food")),
+                    "",""
                 ),
                 BadgerUser(
                     "1",
@@ -171,7 +172,8 @@ fun PreviewEventCard() {
                         "guy.fellow@red-badger.com"
                     ),
                     listOf(),
-                    listOf(BadgerInterest("1", "Coffee"))
+                    listOf(BadgerInterest("1", "Coffee")),
+                    "",""
                 ),
                 BadgerUser(
                     "1",
@@ -206,7 +208,8 @@ fun PreviewEventCard() {
                     listOf(
                         BadgerInterest("1","Food" ),
                         BadgerInterest("2", "Walks" )
-                    )
+                    ),
+                    "",""
                 ),
                 BadgerUser(
                     "1",
@@ -228,7 +231,8 @@ fun PreviewEventCard() {
                     listOf(
                         BadgerInterest("1","Food" ),
                         BadgerInterest("2", "Walks" )
-                    )
+                    ),
+                    "",""
                 ),
                 BadgerUser(
                     "1",

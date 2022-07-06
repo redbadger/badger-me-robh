@@ -75,7 +75,8 @@ fun EventsListPreview() {
                             "andy.noether@red-badger.com"
                         )
                     ),
-                    listOf(BadgerInterest("1", "Food"))
+                    listOf(BadgerInterest("1", "Food")),
+                    "",""
                 ),
                 BadgerEvent(
                     "Test Event 2",
@@ -86,7 +87,8 @@ fun EventsListPreview() {
                         "guy.fellow@red-badger.com"
                     ),
                     listOf(),
-                    listOf(BadgerInterest("1", "Coffee"))
+                    listOf(BadgerInterest("1", "Coffee")),
+                    "",""
                 ),
                 BadgerEvent(
                     "Test Event 3",
@@ -113,7 +115,8 @@ fun EventsListPreview() {
                     listOf(
                         BadgerInterest("1","Food" ),
                         BadgerInterest("2", "Walks" )
-                    )
+                    ),
+                    "",""
                 )
             ),
             BadgerUser(

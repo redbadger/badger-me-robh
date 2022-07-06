@@ -124,7 +124,8 @@ fun getEvents(): List<BadgerEvent> {
                     "andy.noether@red-badger.com"
                 )
             ),
-            listOf(BadgerInterest("1", "Food"))
+            listOf(BadgerInterest("1", "Food")),
+            "2022-07-20T12:00:00","2022-07-20T15:00:00"
         ),
         BadgerEvent(
             "Coffee event",
@@ -135,7 +136,8 @@ fun getEvents(): List<BadgerEvent> {
                 "guy.fellow@red-badger.com"
             ),
             listOf(),
-            listOf(BadgerInterest("1", "Coffee"))
+            listOf(BadgerInterest("1", "Coffee")),
+            "2022-07-20T12:00:00","2022-07-20T15:00:00"
         ),
         BadgerEvent(
             "Mixed event",
@@ -162,7 +164,8 @@ fun getEvents(): List<BadgerEvent> {
             listOf(
                 BadgerInterest("1","Food" ),
                 BadgerInterest("2", "Walks" )
-            )
+            ),
+            "2022-07-20T12:00:00","2022-07-20T15:00:00"
         ),
         BadgerEvent("Walking event",
             BadgerUser(
@@ -191,7 +194,8 @@ fun getEvents(): List<BadgerEvent> {
                     "hugh.mann@red-badger.com"
                 )
             ),
-            listOf(BadgerInterest("1", "Walks"))
+            listOf(BadgerInterest("1", "Walks")),
+            "2022-07-20T12:00:00","2022-07-20T15:00:00"
         ),
         BadgerEvent("Drinking event",
             BadgerUser(
@@ -214,7 +218,8 @@ fun getEvents(): List<BadgerEvent> {
                     "andy.noether@red-badger.com"
                 )
             ),
-            listOf(BadgerInterest("1", "Drinks"))
+            listOf(BadgerInterest("1", "Drinks")),
+            "2022-07-20T12:00:00","2022-07-20T15:00:00"
         ),
         BadgerEvent("Hugs event",
             BadgerUser(
@@ -224,7 +229,8 @@ fun getEvents(): List<BadgerEvent> {
                 "hugh.mann@red-badger.com"
             ),
             listOf(),
-            listOf(BadgerInterest("1", "Hugs"))
+            listOf(BadgerInterest("1", "Hugs")),
+            "2022-07-20T12:00:00","2022-07-20T15:00:00"
         ),
         BadgerEvent("Chats event",
             BadgerUser(
@@ -247,7 +253,8 @@ fun getEvents(): List<BadgerEvent> {
                     "andy.noether@red-badger.com"
                 )
             ),
-            listOf(BadgerInterest("1", "Chats"))
+            listOf(BadgerInterest("1", "Chats")),
+            "2022-07-20T12:00:00","2022-07-20T15:00:00"
         )
     )
 }
