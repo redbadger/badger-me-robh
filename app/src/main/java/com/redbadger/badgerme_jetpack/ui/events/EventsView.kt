@@ -9,25 +9,39 @@ import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.redbadger.badgerme_jetpack.R
 import com.redbadger.badgerme_jetpack.ui.theme.BadgerMe_JetpackTheme
 import com.redbadger.badgerme_jetpack.util.BadgerEvent
 import com.redbadger.badgerme_jetpack.util.BadgerInterest
 import com.redbadger.badgerme_jetpack.util.BadgerUser
+import java.time.LocalDate
+import java.time.LocalDateTime
 
 @Composable
-fun BadgerEventsView(navHostController: NavHostController?, userId: String?, authToken: String) {
+fun BadgerEventsView(
+    navHostController: NavHostController?,
+    userId: String?,
+    authToken: String,
+    viewModel: EventsViewModel = viewModel()
+) {
     val tabs = listOf("Today", "Upcoming")
+    val currentTab = remember { mutableStateOf(0) }
     Box {
         Column () {
             Row(Modifier.fillMaxWidth()) {
-                Column(Modifier.background(color = Color.White).padding(start = 16.dp, top = 7.5.dp, end = 16.dp)) {
+                Column(
+                    Modifier
+                        .background(color = Color.White)
+                        .padding(start = 16.dp, top = 7.5.dp, end = 16.dp)) {
                     Row(Modifier.fillMaxWidth()) {
                         Text(
                             text = "Badger events",
@@ -41,15 +55,18 @@ fun BadgerEventsView(navHostController: NavHostController?, userId: String?, aut
                             .fillMaxWidth()
                     ) {
                         TabRow(
-                            selectedTabIndex = 0,
+                            selectedTabIndex = currentTab.value,
                             backgroundColor = Color.White,
                             contentColor = MaterialTheme.colors.primary,
                             modifier = Modifier.width(210.dp)
                         ) {
-                            tabs.forEachIndexed { _, it ->
+                            tabs.forEachIndexed { index, it ->
                                 Tab(
                                     selected = true,
-                                    onClick = { /*TODO*/ },
+                                    onClick = {
+                                        viewModel.timeFilter.value = it
+                                        currentTab.value = index
+                                    },
                                     text = {
                                         Text(
                                             text = it,
@@ -88,7 +105,23 @@ fun BadgerEventsView(navHostController: NavHostController?, userId: String?, aut
                     .padding(horizontal = 16.dp),
                     verticalArrangement = Arrangement.Top
                 ) {
-                    EventsList(getEvents(), BadgerUser(
+                    EventsList(
+                        getEvents().filter {
+                            when (viewModel.timeFilter.value) {
+                                "Today" -> {
+                                    LocalDateTime
+                                        .parse(it.startTime).toLocalDate()
+                                        .isEqual(LocalDate.now())
+                                }
+                                "Upcoming" -> {
+                                    LocalDateTime
+                                        .parse(it.startTime).toLocalDate()
+                                        .isAfter(LocalDate.now())
+                                }
+                                else -> false
+                            }
+                        }.sortedBy { it.startTime },
+                        BadgerUser(
                         "1",
                         "Hugh",
                         "Mann",
@@ -125,7 +158,7 @@ fun getEvents(): List<BadgerEvent> {
                 )
             ),
             listOf(BadgerInterest("1", "Food")),
-            "2022-07-20T12:00:00","2022-07-20T15:00:00"
+            "2022-06-20T16:00:00","2022-07-20T19:00:00"
         ),
         BadgerEvent(
             "Coffee event",
@@ -165,7 +198,7 @@ fun getEvents(): List<BadgerEvent> {
                 BadgerInterest("1","Food" ),
                 BadgerInterest("2", "Walks" )
             ),
-            "2022-07-20T12:00:00","2022-07-20T15:00:00"
+            "2022-07-06T16:00:00","2022-07-07T19:00:00"
         ),
         BadgerEvent("Walking event",
             BadgerUser(
