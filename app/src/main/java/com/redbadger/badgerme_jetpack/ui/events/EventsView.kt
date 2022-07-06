@@ -263,7 +263,7 @@ fun getEvents(): List<BadgerEvent> {
                 )
             ),
             listOf(BadgerInterest("1", "Drinks")),
-            "2022-07-20T12:00:00","2022-07-20T15:00:00"
+            "2022-07-09T12:00:00","2022-07-20T15:00:00"
         ),
         BadgerEvent("Hugs event",
             BadgerUser(
@@ -274,7 +274,7 @@ fun getEvents(): List<BadgerEvent> {
             ),
             listOf(),
             listOf(BadgerInterest("1", "Hugs")),
-            "2022-07-20T12:00:00","2022-07-20T15:00:00"
+            "2022-07-11T12:00:00","2022-07-20T15:00:00"
         ),
         BadgerEvent("Chats event",
             BadgerUser(

@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -26,7 +27,8 @@ import java.util.*
 
 @Composable
 fun EventsList(events: List<BadgerEvent>, currentUser: BadgerUser, viewModel: EventsViewModel) {
-    Column(modifier = Modifier.fillMaxHeight().padding(top = 24.dp)) {
+    Column(modifier = Modifier
+        .fillMaxHeight()) {
         if (events.isEmpty()) {
             Column(modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Center) {
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
@@ -49,104 +51,113 @@ fun EventsList(events: List<BadgerEvent>, currentUser: BadgerUser, viewModel: Ev
             val currentWeek = LocalDate
                 .now()
                 .get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear())
-            Column(verticalArrangement = Arrangement.Top) {
-                Row(Modifier.fillMaxWidth()) {
-                    Column {
-                        if (viewModel.timeFilter.value != "Today" && viewModel.tomorrow.value) {
-                            Text(
-                                modifier = Modifier.padding(bottom = 8.dp),
-                                text = "Tomorrow",
-                                style = MaterialTheme.typography.h4
-                            )
-                        }
-                        LazyColumn(verticalArrangement = Arrangement.Top) {
-                            items(events) { event ->
+
+            LazyColumn(verticalArrangement = Arrangement.Top) {
+                itemsIndexed(events) { index, event ->
+                    if (index == 0) Spacer(modifier = Modifier.padding(top = 16.dp))
+                    Row(Modifier.fillMaxWidth()) {
+                        Column {
+                            Column(verticalArrangement = Arrangement.Top) {
                                 if (LocalDateTime.parse(event.startTime).toLocalDate()
                                         .isEqual(LocalDate.now().plusDays(1))
                                 ) {
+                                    if (viewModel.timeFilter.value != "Today" && viewModel.tomorrow.value) {
+                                        Text(
+                                            modifier = Modifier.padding(top = 8.dp),
+                                            text = "Tomorrow",
+                                            style = MaterialTheme.typography.h4
+                                        )
+                                    }
                                     viewModel.tomorrow.value = true
-                                    Row(Modifier.padding(bottom = 8.dp)) {
+                                    Row(Modifier.padding(top = 8.dp)) {
                                         EventCard(event, currentUser)
                                     }
                                 }
                             }
                         }
                     }
-                }
-                Row(Modifier.fillMaxWidth()) {
-                    Column {
-                        if (viewModel.timeFilter.value != "Today" && viewModel.thisWeek.value) {
-                            Text(
-                                modifier = Modifier.padding(bottom = 8.dp),
-                                text = "This week",
-                                style = MaterialTheme.typography.h4
-                            )
-                        }
-                        LazyColumn(verticalArrangement = Arrangement.Top) {
-                            items(events) { event ->
+                    Row(Modifier.fillMaxWidth()) {
+                        Column {
+                            Column(verticalArrangement = Arrangement.Top) {
                                 val eventWeek = LocalDateTime
                                     .parse(event.startTime)
                                     .toLocalDate()
-                                    .get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear())
-                                if (eventWeek == currentWeek) {
+                                    .get(
+                                        WeekFields.of(Locale.getDefault())
+                                            .weekOfWeekBasedYear()
+                                    )
+                                if (eventWeek == currentWeek && !LocalDateTime
+                                        .parse(event.startTime).toLocalDate()
+                                        .isEqual(LocalDate.now().plusDays(1))
+                                ) {
+                                    if (viewModel.timeFilter.value != "Today" && viewModel.thisWeek.value) {
+                                        Text(
+                                            modifier = Modifier.padding(top = 8.dp),
+                                            text = "This week",
+                                            style = MaterialTheme.typography.h4
+                                        )
+                                    }
                                     viewModel.thisWeek.value = true
-                                    Row(Modifier.padding(bottom = 8.dp)) {
+                                    Row(Modifier.padding(top = 8.dp)) {
                                         EventCard(event, currentUser)
                                     }
                                 }
                             }
                         }
                     }
-                }
-                Row(Modifier.fillMaxWidth()) {
-                    Column {
-                        if (viewModel.timeFilter.value != "Today" && viewModel.nextWeek.value) {
-                            Text(
-                                modifier = Modifier.padding(bottom = 8.dp),
-                                text = "Next week",
-                                style = MaterialTheme.typography.h4
-                            )
-                        }
-                        LazyColumn(verticalArrangement = Arrangement.Top) {
-                            items(events) { event ->
+                    Row(Modifier.fillMaxWidth()) {
+                        Column {
+                            Column(verticalArrangement = Arrangement.Top) {
                                 val eventWeek = LocalDateTime
                                     .parse(event.startTime)
                                     .toLocalDate()
-                                    .get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear())
+                                    .get(
+                                        WeekFields.of(Locale.getDefault())
+                                            .weekOfWeekBasedYear()
+                                    )
                                 if (eventWeek == currentWeek + 1) {
+                                    if (viewModel.timeFilter.value != "Today" && viewModel.nextWeek.value) {
+                                        Text(
+                                            modifier = Modifier.padding(top = 8.dp),
+                                            text = "Next week",
+                                            style = MaterialTheme.typography.h4
+                                        )
+                                    }
                                     viewModel.nextWeek.value = true
-                                    Row(Modifier.padding(bottom = 8.dp)) {
+                                    Row(Modifier.padding(top = 8.dp)) {
                                         EventCard(event, currentUser)
                                     }
                                 }
                             }
                         }
                     }
-                }
-                Row(Modifier.fillMaxWidth()) {
-                    Column {
-                        if (viewModel.timeFilter.value != "Today" && viewModel.later.value) {
-                            Text(
-                                modifier = Modifier.padding(bottom = 8.dp),
-                                text = "Later",
-                                style = MaterialTheme.typography.h4
-                            )
-                        }
-                        LazyColumn(verticalArrangement = Arrangement.Top) {
-                            items(events) { event ->
+                    Row(Modifier.fillMaxWidth()) {
+                        Column {
+                            Column(verticalArrangement = Arrangement.Top) {
                                 val eventWeek = LocalDateTime
                                     .parse(event.startTime)
                                     .toLocalDate()
-                                    .get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear())
+                                    .get(
+                                        WeekFields.of(Locale.getDefault())
+                                            .weekOfWeekBasedYear()
+                                    )
                                 if (eventWeek > currentWeek + 1) {
+                                    if (viewModel.timeFilter.value != "Today" && viewModel.later.value) {
+                                        Text(
+                                            modifier = Modifier.padding(top = 8.dp),
+                                            text = "Later",
+                                            style = MaterialTheme.typography.h4
+                                        )
+                                    }
                                     viewModel.later.value = true
-                                    Row(Modifier.padding(bottom = 8.dp)) {
+                                    Row(Modifier.padding(top = 8.dp)) {
                                         EventCard(event, currentUser)
                                     }
                                 }
                             }
                         }
                     }
+                    if (index == events.lastIndex) Spacer(modifier = Modifier.padding(top = 16.dp))
                 }
             }
         }
