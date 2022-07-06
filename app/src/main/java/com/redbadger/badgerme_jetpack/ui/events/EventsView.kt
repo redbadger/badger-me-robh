@@ -1,6 +1,7 @@
 package com.redbadger.badgerme_jetpack.ui.events
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
@@ -24,46 +25,69 @@ import com.redbadger.badgerme_jetpack.util.BadgerUser
 fun BadgerEventsView(navHostController: NavHostController?, userId: String?, authToken: String) {
     val tabs = listOf("Today", "Upcoming")
     Box {
-        Column (Modifier.padding(start = 16.dp, top = 7.5.dp, end = 16.dp)) {
-            Text(
-                text = "Badger events",
-                style = MaterialTheme.typography.h3
-            )
-            Row(modifier = Modifier.height(48.dp)) {
-                TabRow(
-                    selectedTabIndex = 0,
-                    backgroundColor = Color.White,
-                    contentColor = MaterialTheme.colors.primary,
-                    modifier = Modifier.width(210.dp)
-                ) {
-                    tabs.forEachIndexed { index, it ->
-                        Tab(
-                            selected = true,
-                            onClick = { /*TODO*/ },
-                            text = {
-                                Text(
-                                    text = it,
-                                    style = MaterialTheme.typography.button,
-                                    color = Color.Black
-                                )
-                            }
+        Column () {
+            Row(Modifier.fillMaxWidth()) {
+                Column(Modifier.background(color = Color.White).padding(start = 16.dp, top = 7.5.dp, end = 16.dp)) {
+                    Row(Modifier.fillMaxWidth()) {
+                        Text(
+                            text = "Badger events",
+                            style = MaterialTheme.typography.h3
                         )
                     }
-                }
-                Column( modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Center ) {
-                    Row( modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.preferences__state_enabled),
-                            contentDescription = "settings",
-                            modifier = Modifier
-                                .size(24.dp)
-                                .clickable { /*TODO*/ }
-                        )
+                    Row(
+                        modifier = Modifier
+                            .height(48.dp)
+                            .background(color = Color.White)
+                            .fillMaxWidth()
+                    ) {
+                        TabRow(
+                            selectedTabIndex = 0,
+                            backgroundColor = Color.White,
+                            contentColor = MaterialTheme.colors.primary,
+                            modifier = Modifier.width(210.dp)
+                        ) {
+                            tabs.forEachIndexed { _, it ->
+                                Tab(
+                                    selected = true,
+                                    onClick = { /*TODO*/ },
+                                    text = {
+                                        Text(
+                                            text = it,
+                                            style = MaterialTheme.typography.button,
+                                            color = Color.Black
+                                        )
+                                    }
+                                )
+                            }
+                        }
+                        Column(
+                            modifier = Modifier.fillMaxHeight(),
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.End
+                            ) {
+                                Image(
+                                    painter = painterResource(
+                                        id = R.drawable.preferences__state_enabled
+                                    ),
+                                    contentDescription = "settings",
+                                    modifier = Modifier
+                                        .size(24.dp)
+                                        .clickable { /*TODO*/ }
+                                )
+                            }
+                        }
                     }
                 }
             }
             Row {
-                Column(modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Top) {
+                Column(modifier = Modifier
+                    .fillMaxHeight()
+                    .padding(horizontal = 16.dp),
+                    verticalArrangement = Arrangement.Top
+                ) {
                     EventsList(getEvents(), BadgerUser(
                         "1",
                         "Hugh",
