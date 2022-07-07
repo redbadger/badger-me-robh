@@ -19,7 +19,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.redbadger.badgerme_jetpack.R
+import com.redbadger.badgerme_jetpack.ui.setup.MultiselectInterest
 import com.redbadger.badgerme_jetpack.ui.theme.BadgerMe_JetpackTheme
+import com.redbadger.badgerme_jetpack.ui.theme.uiLightest
 import com.redbadger.badgerme_jetpack.util.BadgerEvent
 import com.redbadger.badgerme_jetpack.util.BadgerInterest
 import com.redbadger.badgerme_jetpack.util.BadgerUser
@@ -42,6 +44,14 @@ fun BadgerEventsView(
         bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed)
     )
     val coroutineScope = rememberCoroutineScope()
+
+    val food = remember { mutableStateOf(false) }
+    val drinks = remember { mutableStateOf(false) }
+    val coffee = remember { mutableStateOf(false) }
+    val chats = remember { mutableStateOf(false) }
+    val walks = remember { mutableStateOf(false) }
+    val hugs = remember { mutableStateOf(false) }
+
     BottomSheetScaffold(
         scaffoldState = bottomSheetScaffoldState,
         sheetShape = RoundedCornerShape(8.dp),
@@ -49,10 +59,11 @@ fun BadgerEventsView(
             Box(
                 Modifier
                     .fillMaxWidth()
-                    .height(200.dp)
+                    .height(480.dp)
+                    .background(color = uiLightest)
             ) {
                 Column {
-                    Box {
+                    Box (Modifier.background(Color.White)) {
                         Row(Modifier.fillMaxWidth().padding(16.dp), horizontalArrangement = Arrangement.Start) {
                             Image(
                                 painter = painterResource(
@@ -75,6 +86,58 @@ fun BadgerEventsView(
                             )
                         }
                     }
+                    Spacer(modifier = Modifier.padding(top = 24.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        MultiselectInterest(
+                            painter = painterResource(id = R.drawable.property_1_food),
+                            name = "Food",
+                            ticked = food
+                        )
+                        Spacer(modifier = Modifier.padding(8.dp))
+                        MultiselectInterest(
+                            painter = painterResource(id = R.drawable.property_1_drinks),
+                            name = "Drinks",
+                            ticked = drinks
+                        )
+                    }
+                    Spacer(modifier = Modifier.padding(8.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        MultiselectInterest(
+                            painter = painterResource(id = R.drawable.property_1_coffee),
+                            name = "Coffee",
+                            ticked = coffee
+                        )
+                        Spacer(modifier = Modifier.padding(8.dp))
+                        MultiselectInterest(
+                            painter = painterResource(id = R.drawable.property_1_chats),
+                            name = "Chats",
+                            ticked = chats
+                        )
+                    }
+                    Spacer(modifier = Modifier.padding(8.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        MultiselectInterest(
+                            painter = painterResource(id = R.drawable.property_1_walks),
+                            name = "Walks",
+                            ticked = walks
+                        )
+                        Spacer(modifier = Modifier.padding(8.dp))
+                        MultiselectInterest(
+                            painter = painterResource(id = R.drawable.property_1_hugs),
+                            name = "Hugs",
+                            ticked = hugs
+                        )
+                    }
+                    Spacer(modifier = Modifier.padding(top = 24.dp))
                 }
             }
         }, sheetPeekHeight = 0.dp
