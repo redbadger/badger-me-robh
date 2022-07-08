@@ -45,13 +45,6 @@ fun BadgerEventsView(
     )
     val coroutineScope = rememberCoroutineScope()
 
-    val food = remember { mutableStateOf(false) }
-    val drinks = remember { mutableStateOf(false) }
-    val coffee = remember { mutableStateOf(false) }
-    val chats = remember { mutableStateOf(false) }
-    val walks = remember { mutableStateOf(false) }
-    val hugs = remember { mutableStateOf(false) }
-
     BottomSheetScaffold(
         scaffoldState = bottomSheetScaffoldState,
         sheetShape = RoundedCornerShape(8.dp),
@@ -63,8 +56,13 @@ fun BadgerEventsView(
                     .background(color = uiLightest)
             ) {
                 Column {
-                    Box (Modifier.background(Color.White)) {
-                        Row(Modifier.fillMaxWidth().padding(16.dp), horizontalArrangement = Arrangement.Start) {
+                    Box(Modifier.background(Color.White)) {
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            horizontalArrangement = Arrangement.Start
+                        ) {
                             Image(
                                 painter = painterResource(
                                     id = R.drawable.controls_close
@@ -79,7 +77,12 @@ fun BadgerEventsView(
                                     }
                             )
                         }
-                        Row(Modifier.fillMaxWidth().padding(vertical = 16.dp), horizontalArrangement = Arrangement.Center) {
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 16.dp),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
                             Text(
                                 text = "Filter by interests (${interests.size})",
                                 style = MaterialTheme.typography.h5,
@@ -94,13 +97,13 @@ fun BadgerEventsView(
                         MultiselectInterest(
                             painter = painterResource(id = R.drawable.property_1_food),
                             name = "Food",
-                            ticked = food
+                            ticked = viewModel.food
                         )
                         Spacer(modifier = Modifier.padding(8.dp))
                         MultiselectInterest(
                             painter = painterResource(id = R.drawable.property_1_drinks),
                             name = "Drinks",
-                            ticked = drinks
+                            ticked = viewModel.drinks
                         )
                     }
                     Spacer(modifier = Modifier.padding(8.dp))
@@ -111,13 +114,13 @@ fun BadgerEventsView(
                         MultiselectInterest(
                             painter = painterResource(id = R.drawable.property_1_coffee),
                             name = "Coffee",
-                            ticked = coffee
+                            ticked = viewModel.coffee
                         )
                         Spacer(modifier = Modifier.padding(8.dp))
                         MultiselectInterest(
                             painter = painterResource(id = R.drawable.property_1_chats),
                             name = "Chats",
-                            ticked = chats
+                            ticked = viewModel.chats
                         )
                     }
                     Spacer(modifier = Modifier.padding(8.dp))
@@ -128,13 +131,13 @@ fun BadgerEventsView(
                         MultiselectInterest(
                             painter = painterResource(id = R.drawable.property_1_walks),
                             name = "Walks",
-                            ticked = walks
+                            ticked = viewModel.walks
                         )
                         Spacer(modifier = Modifier.padding(8.dp))
                         MultiselectInterest(
                             painter = painterResource(id = R.drawable.property_1_hugs),
                             name = "Hugs",
-                            ticked = hugs
+                            ticked = viewModel.hugs
                         )
                     }
                     Spacer(modifier = Modifier.padding(top = 24.dp))
@@ -220,6 +223,7 @@ fun BadgerEventsView(
                     ) {
                         EventsList(
                             getEvents().filter {
+//                                Filter by time
                                 when (viewModel.timeFilter.value) {
                                     "Today" -> {
                                         viewModel.tomorrow.value = -1
@@ -243,6 +247,45 @@ fun BadgerEventsView(
                                     }
                                     else -> false
                                 }
+                            }.filter {
+//                                Filter by interest
+                                /*TODO Need to properly get BadgerInterests from the API ala InterestSetup*/
+                                (viewModel.food.value && it.tags.contains(
+                                    BadgerInterest(
+                                        "0",
+                                        "Food"
+                                    )
+                                )) ||
+                                        (viewModel.drinks.value && it.tags.contains(
+                                            BadgerInterest(
+                                                "1",
+                                                "Drinks"
+                                            )
+                                        )) ||
+                                        (viewModel.coffee.value && it.tags.contains(
+                                            BadgerInterest(
+                                                "2",
+                                                "Coffee"
+                                            )
+                                        )) ||
+                                        (viewModel.chats.value && it.tags.contains(
+                                            BadgerInterest(
+                                                "3",
+                                                "Chats"
+                                            )
+                                        )) ||
+                                        (viewModel.walks.value && it.tags.contains(
+                                            BadgerInterest(
+                                                "4",
+                                                "Walks"
+                                            )
+                                        )) ||
+                                        (viewModel.hugs.value && it.tags.contains(
+                                            BadgerInterest(
+                                                "5",
+                                                "Hugs"
+                                            )
+                                        ))
                             }.sortedBy { it.startTime },
                             BadgerUser(
                                 "1",
@@ -261,7 +304,8 @@ fun BadgerEventsView(
 
 fun getEvents(): List<BadgerEvent> {
     return listOf(
-        BadgerEvent("Food event",
+        BadgerEvent(
+            "Food event",
             BadgerUser(
                 "1",
                 "Hugh",
@@ -282,8 +326,8 @@ fun getEvents(): List<BadgerEvent> {
                     "andy.noether@red-badger.com"
                 )
             ),
-            listOf(BadgerInterest("1", "Food")),
-            "2022-06-20T16:00:00","2022-07-20T19:00:00"
+            listOf(BadgerInterest("0", "Food")),
+            "2022-06-20T16:00:00", "2022-07-20T19:00:00"
         ),
         BadgerEvent(
             "Coffee event",
@@ -294,8 +338,8 @@ fun getEvents(): List<BadgerEvent> {
                 "guy.fellow@red-badger.com"
             ),
             listOf(),
-            listOf(BadgerInterest("1", "Coffee")),
-            "2022-07-07T12:00:00","2022-07-20T15:00:00"
+            listOf(BadgerInterest("2", "Coffee")),
+            "2022-07-07T12:00:00", "2022-07-20T15:00:00"
         ),
         BadgerEvent(
             "Mixed event",
@@ -320,12 +364,13 @@ fun getEvents(): List<BadgerEvent> {
                 )
             ),
             listOf(
-                BadgerInterest("1","Food" ),
-                BadgerInterest("2", "Walks" )
+                BadgerInterest("0", "Food"),
+                BadgerInterest("4", "Walks")
             ),
-            "2022-07-06T16:00:00","2022-07-07T19:00:00"
+            "2022-07-06T16:00:00", "2022-07-07T19:00:00"
         ),
-        BadgerEvent("Walking event",
+        BadgerEvent(
+            "Walking event",
             BadgerUser(
                 "3",
                 "Andy",
@@ -352,10 +397,11 @@ fun getEvents(): List<BadgerEvent> {
                     "hugh.mann@red-badger.com"
                 )
             ),
-            listOf(BadgerInterest("1", "Walks")),
-            "2022-07-20T12:00:00","2022-07-20T15:00:00"
+            listOf(BadgerInterest("4", "Walks")),
+            "2022-07-20T12:00:00", "2022-07-20T15:00:00"
         ),
-        BadgerEvent("Drinking event",
+        BadgerEvent(
+            "Drinking event",
             BadgerUser(
                 "1",
                 "Hugh",
@@ -377,9 +423,10 @@ fun getEvents(): List<BadgerEvent> {
                 )
             ),
             listOf(BadgerInterest("1", "Drinks")),
-            "2022-07-09T12:00:00","2022-07-20T15:00:00"
+            "2022-07-09T12:00:00", "2022-07-20T15:00:00"
         ),
-        BadgerEvent("Hugs event",
+        BadgerEvent(
+            "Hugs event",
             BadgerUser(
                 "1",
                 "Hugh",
@@ -387,10 +434,11 @@ fun getEvents(): List<BadgerEvent> {
                 "hugh.mann@red-badger.com"
             ),
             listOf(),
-            listOf(BadgerInterest("1", "Hugs")),
-            "2022-07-11T12:00:00","2022-07-20T15:00:00"
+            listOf(BadgerInterest("5", "Hugs")),
+            "2022-07-11T12:00:00", "2022-07-20T15:00:00"
         ),
-        BadgerEvent("Chats event",
+        BadgerEvent(
+            "Chats event",
             BadgerUser(
                 "1",
                 "Hugh",
@@ -411,8 +459,8 @@ fun getEvents(): List<BadgerEvent> {
                     "andy.noether@red-badger.com"
                 )
             ),
-            listOf(BadgerInterest("1", "Chats")),
-            "2022-07-20T12:00:00","2022-07-20T15:00:00"
+            listOf(BadgerInterest("3", "Chats")),
+            "2022-07-20T12:00:00", "2022-07-20T15:00:00"
         )
     )
 }
