@@ -6,6 +6,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,6 +47,7 @@ fun BadgerEventsView(
         bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed)
     )
     val coroutineScope = rememberCoroutineScope()
+    val modalContent = remember { mutableStateOf("filter") }
 
     BottomSheetScaffold(
         scaffoldState = bottomSheetScaffoldState,
@@ -52,7 +56,13 @@ fun BadgerEventsView(
             Box(
                 Modifier
                     .fillMaxWidth()
-                    .height(480.dp)
+                    .height(
+                        when (modalContent.value) {
+                            "filter" -> 480.dp
+                            "add" -> 700.dp
+                            else -> 200.dp
+                        }
+                    )
                     .background(color = uiLightest)
             ) {
                 Column {
@@ -84,63 +94,36 @@ fun BadgerEventsView(
                             horizontalArrangement = Arrangement.Center
                         ) {
                             Text(
-                                text = "Filter by interests (${interests.size})",
+                                text =  when (modalContent.value) {
+                                    "filter" -> "Filter by interests (${interests.size})"
+                                    "add" -> "Create Event"
+                                    else -> "ERROR UNKNOWN MODAL TYPE"
+                                },
                                 style = MaterialTheme.typography.h5,
                             )
                         }
+                        if (modalContent.value == "add") {
+                            Row(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 16.dp),
+                                horizontalArrangement = Arrangement.End
+                            ) {
+                                TextButton(
+                                    onClick = { /*TODO: Submit new event to API*/ },
+                                    enabled = false
+                                ) {
+                                    Text(
+                                        text = "Done",
+                                        style = MaterialTheme.typography.h5,
+                                    )
+                                }
+                            }
+                        }
                     }
                     Spacer(modifier = Modifier.padding(top = 24.dp))
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        MultiselectInterest(
-                            painter = painterResource(id = R.drawable.property_1_food),
-                            name = "Food",
-                            ticked = viewModel.food
-                        )
-                        Spacer(modifier = Modifier.padding(8.dp))
-                        MultiselectInterest(
-                            painter = painterResource(id = R.drawable.property_1_drinks),
-                            name = "Drinks",
-                            ticked = viewModel.drinks
-                        )
-                    }
-                    Spacer(modifier = Modifier.padding(8.dp))
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        MultiselectInterest(
-                            painter = painterResource(id = R.drawable.property_1_coffee),
-                            name = "Coffee",
-                            ticked = viewModel.coffee
-                        )
-                        Spacer(modifier = Modifier.padding(8.dp))
-                        MultiselectInterest(
-                            painter = painterResource(id = R.drawable.property_1_chats),
-                            name = "Chats",
-                            ticked = viewModel.chats
-                        )
-                    }
-                    Spacer(modifier = Modifier.padding(8.dp))
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        MultiselectInterest(
-                            painter = painterResource(id = R.drawable.property_1_walks),
-                            name = "Walks",
-                            ticked = viewModel.walks
-                        )
-                        Spacer(modifier = Modifier.padding(8.dp))
-                        MultiselectInterest(
-                            painter = painterResource(id = R.drawable.property_1_hugs),
-                            name = "Hugs",
-                            ticked = viewModel.hugs
-                        )
-                    }
-                    Spacer(modifier = Modifier.padding(top = 24.dp))
+                    if (modalContent.value == "filter") FilterSelect(viewModel)
+                    else if (modalContent.value == "add") AddEvent(viewModel)
                 }
             }
         }, sheetPeekHeight = 0.dp
@@ -204,6 +187,7 @@ fun BadgerEventsView(
                                         modifier = Modifier
                                             .size(24.dp)
                                             .clickable {
+                                                modalContent.value = "filter"
                                                 coroutineScope.launch {
                                                     bottomSheetScaffoldState.bottomSheetState.expand()
                                                 }
@@ -298,7 +282,89 @@ fun BadgerEventsView(
                     }
                 }
             }
+            Column(
+                Modifier
+                    .fillMaxHeight()
+                    .padding(bottom = 14.dp), verticalArrangement = Arrangement.Bottom) {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(end = 16.dp), horizontalArrangement = Arrangement.End) {
+                    FloatingActionButton(
+                        onClick = {
+                            modalContent.value = "add"
+                            coroutineScope.launch {
+                                bottomSheetScaffoldState.bottomSheetState.expand()
+                            }
+                        }
+                    ) {
+                        Icon(Icons.Filled.Add, "")
+                    }
+                }
+            }
         }
+    }
+}
+
+@Composable
+fun FilterSelect(viewModel: EventsViewModel = viewModel()) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center
+    ) {
+        MultiselectInterest(
+            painter = painterResource(id = R.drawable.property_1_food),
+            name = "Food",
+            ticked = viewModel.food
+        )
+        Spacer(modifier = Modifier.padding(8.dp))
+        MultiselectInterest(
+            painter = painterResource(id = R.drawable.property_1_drinks),
+            name = "Drinks",
+            ticked = viewModel.drinks
+        )
+    }
+    Spacer(modifier = Modifier.padding(8.dp))
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center
+    ) {
+        MultiselectInterest(
+            painter = painterResource(id = R.drawable.property_1_coffee),
+            name = "Coffee",
+            ticked = viewModel.coffee
+        )
+        Spacer(modifier = Modifier.padding(8.dp))
+        MultiselectInterest(
+            painter = painterResource(id = R.drawable.property_1_chats),
+            name = "Chats",
+            ticked = viewModel.chats
+        )
+    }
+    Spacer(modifier = Modifier.padding(8.dp))
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center
+    ) {
+        MultiselectInterest(
+            painter = painterResource(id = R.drawable.property_1_walks),
+            name = "Walks",
+            ticked = viewModel.walks
+        )
+        Spacer(modifier = Modifier.padding(8.dp))
+        MultiselectInterest(
+            painter = painterResource(id = R.drawable.property_1_hugs),
+            name = "Hugs",
+            ticked = viewModel.hugs
+        )
+    }
+    Spacer(modifier = Modifier.padding(top = 24.dp))
+}
+
+@Composable
+fun AddEvent(viewModel: EventsViewModel = viewModel()){
+    Row {
+        Text(text = "<Placeholder - Add Event>", style = MaterialTheme.typography.h2)
     }
 }
 
