@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.redbadger.badgerme_jetpack.ui.events.BadgerEventsView
+import com.redbadger.badgerme_jetpack.ui.home.events.BadgerEventsView
 import com.redbadger.badgerme_jetpack.ui.login.LoginView
 import com.redbadger.badgerme_jetpack.ui.setup.InterestSetupView
 import com.redbadger.badgerme_jetpack.ui.setup.ProfileSetupView

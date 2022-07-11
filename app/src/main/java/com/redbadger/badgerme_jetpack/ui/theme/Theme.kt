@@ -83,6 +83,7 @@ private val BadgerTypography = Typography(
         fontWeight = FontWeight.SemiBold,
         fontSize = 16.sp
     ),
+//    Label Small
     caption = TextStyle(
         fontFamily = FontFamily.SansSerif,
         fontWeight = FontWeight.SemiBold,
