@@ -256,36 +256,36 @@ fun BadgerEventsView(
                                         "Food"
                                     )
                                 )) ||
-                                        (viewModel.drinks.value && it.tags.contains(
-                                            BadgerInterest(
-                                                "1",
-                                                "Drinks"
-                                            )
-                                        )) ||
-                                        (viewModel.coffee.value && it.tags.contains(
-                                            BadgerInterest(
-                                                "2",
-                                                "Coffee"
-                                            )
-                                        )) ||
-                                        (viewModel.chats.value && it.tags.contains(
-                                            BadgerInterest(
-                                                "3",
-                                                "Chats"
-                                            )
-                                        )) ||
-                                        (viewModel.walks.value && it.tags.contains(
-                                            BadgerInterest(
-                                                "4",
-                                                "Walks"
-                                            )
-                                        )) ||
-                                        (viewModel.hugs.value && it.tags.contains(
-                                            BadgerInterest(
-                                                "5",
-                                                "Hugs"
-                                            )
-                                        ))
+                                (viewModel.drinks.value && it.tags.contains(
+                                    BadgerInterest(
+                                        "1",
+                                        "Drinks"
+                                    )
+                                )) ||
+                                (viewModel.coffee.value && it.tags.contains(
+                                    BadgerInterest(
+                                        "2",
+                                        "Coffee"
+                                    )
+                                )) ||
+                                (viewModel.chats.value && it.tags.contains(
+                                    BadgerInterest(
+                                        "3",
+                                        "Chats"
+                                    )
+                                )) ||
+                                (viewModel.walks.value && it.tags.contains(
+                                    BadgerInterest(
+                                        "4",
+                                        "Walks"
+                                    )
+                                )) ||
+                                (viewModel.hugs.value && it.tags.contains(
+                                    BadgerInterest(
+                                        "5",
+                                        "Hugs"
+                                    )
+                                ))
                             }.sortedBy { it.startTime },
                             BadgerUser(
                                 "1",
@@ -339,7 +339,7 @@ fun getEvents(): List<BadgerEvent> {
             ),
             listOf(),
             listOf(BadgerInterest("2", "Coffee")),
-            LocalDateTime.now().plusDays(1).toString(), LocalDateTime.now().plusDays(1).plusHours(1).toString()
+            LocalDateTime.now().plusDays(1).plusHours(1).toString(), LocalDateTime.now().plusDays(1).plusHours(1).toString()
         ),
         BadgerEvent(
             "Mixed event",
