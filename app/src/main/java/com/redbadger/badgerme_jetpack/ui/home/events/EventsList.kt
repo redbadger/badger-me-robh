@@ -24,8 +24,7 @@ import java.util.*
 
 @Composable
 fun EventsList(events: List<BadgerEvent>, currentUser: BadgerUser, viewModel: EventsViewModel) {
-    Column(modifier = Modifier
-        .fillMaxHeight()) {
+    Column {
         if (events.isEmpty()) {
             Column(modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Center) {
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
