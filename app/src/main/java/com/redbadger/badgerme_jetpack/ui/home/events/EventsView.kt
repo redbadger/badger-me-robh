@@ -100,51 +100,54 @@ fun BadgerEventsView(
                     }
                 }
             }
-            Row {
-                Column(modifier = Modifier.padding(horizontal = 16.dp),
-                    verticalArrangement = Arrangement.Top
-                ) {
-                    Row {
-                        EventsList(
-                            getEvents().filter {
-                                when (viewModel.timeFilter.value) {
-                                    "Today" -> {
-                                        viewModel.tomorrow.value = -1
-                                        viewModel.thisWeek.value = -1
-                                        viewModel.nextWeek.value = -1
-                                        viewModel.later.value = -1
+            Box {
+                Row {
+                    Column(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        verticalArrangement = Arrangement.Top
+                    ) {
+                        Row {
+                            EventsList(
+                                getEvents().filter {
+                                    when (viewModel.timeFilter.value) {
+                                        "Today" -> {
+                                            viewModel.tomorrow.value = -1
+                                            viewModel.thisWeek.value = -1
+                                            viewModel.nextWeek.value = -1
+                                            viewModel.later.value = -1
 
-                                        LocalDateTime
-                                            .parse(it.startTime).toLocalDate()
-                                            .isEqual(LocalDate.now())
-                                    }
-                                    "Upcoming" -> {
-                                        viewModel.tomorrow.value = -1
-                                        viewModel.thisWeek.value = -1
-                                        viewModel.nextWeek.value = -1
-                                        viewModel.later.value = -1
+                                            LocalDateTime
+                                                .parse(it.startTime).toLocalDate()
+                                                .isEqual(LocalDate.now())
+                                        }
+                                        "Upcoming" -> {
+                                            viewModel.tomorrow.value = -1
+                                            viewModel.thisWeek.value = -1
+                                            viewModel.nextWeek.value = -1
+                                            viewModel.later.value = -1
 
-                                        LocalDateTime
-                                            .parse(it.startTime).toLocalDate()
-                                            .isAfter(LocalDate.now())
+                                            LocalDateTime
+                                                .parse(it.startTime).toLocalDate()
+                                                .isAfter(LocalDate.now())
+                                        }
+                                        else -> false
                                     }
-                                    else -> false
-                                }
-                            }.sortedBy { it.startTime },
-                            BadgerUser(
-                                "1",
-                                "Hugh",
-                                "Mann",
-                                "hugh.mann@red-badger.com"
-                            ),
-                            viewModel
-                        )
+                                }.sortedBy { it.startTime },
+                                BadgerUser(
+                                    "1",
+                                    "Hugh",
+                                    "Mann",
+                                    "hugh.mann@red-badger.com"
+                                ),
+                                viewModel
+                            )
+                        }
                     }
                 }
-            }
-            Row {
-                Column(Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Bottom) {
-                    BottomBar(activeTab = 0)
+                Row {
+                    Column(Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Bottom) {
+                        BottomBar(activeTab = 0)
+                    }
                 }
             }
         }

@@ -1,11 +1,10 @@
 package com.redbadger.badgerme_jetpack.ui
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Tab
-import androidx.compose.material.TabRow
-import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -46,14 +45,23 @@ fun Title() {
 @Composable
 fun BottomBar(activeTab: Int) {
     val tabs = listOf("Home", "Badgers", "Profile", "Activities")
-    Box(Modifier.height(56.dp)) {
+    val tabHeight = 56
+    Box(Modifier.height(tabHeight.dp)) {
         Column {
             Row(Modifier.fillMaxWidth()) {
                 TabRow(
                     selectedTabIndex = activeTab,
                     backgroundColor = Color.Black,
                     contentColor = MaterialTheme.colors.primary,
-//                    modifier = Modifier.width(210.dp)
+                    indicator = { tabPositions: List<TabPosition> ->
+                        TabRowDefaults.Indicator(
+                            Modifier
+                                .tabIndicatorOffset(tabPositions[activeTab])
+                                .offset(y = (-(tabHeight-2)).dp)
+                                .height(2.dp)
+                                .background(color = MaterialTheme.colors.primary)
+                        )
+                    }
                 ) {
                     tabs.forEachIndexed { index, it ->
                         Tab(
@@ -84,7 +92,8 @@ fun BottomBar(activeTab: Int) {
                                         else UiDarker
                                     )
                                 )
-                            }
+                            },
+                            modifier = Modifier.padding(top = 8.dp)
                         )
                     }
                 }
