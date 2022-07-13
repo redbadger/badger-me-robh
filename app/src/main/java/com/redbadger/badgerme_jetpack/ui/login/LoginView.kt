@@ -276,7 +276,7 @@ fun signIn(account: GoogleSignInAccount,
                     }
                     else {
                         navHostController?.navigate(
-                            "${Screen.Events.route}/${response.body()?.get(0)?.id}/Bearer ${account.idToken!!}"
+                            "${Screen.Home.route}/${response.body()?.get(0)?.id}/Bearer ${account.idToken!!}"
                         )
                     }
                 }

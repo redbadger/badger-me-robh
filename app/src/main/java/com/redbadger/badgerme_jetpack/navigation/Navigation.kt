@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.redbadger.badgerme_jetpack.ui.home.events.BadgerEventsView
+import com.redbadger.badgerme_jetpack.ui.home.HomeView
 import com.redbadger.badgerme_jetpack.ui.login.LoginView
 import com.redbadger.badgerme_jetpack.ui.setup.InterestSetupView
 import com.redbadger.badgerme_jetpack.ui.setup.ProfileSetupView
@@ -30,14 +30,13 @@ fun NavigationHost() {
                 it.arguments?.getString("authToken")!!
             )
         }
-        composable(Screen.Events.route + "/{userId}"+ "/{authToken}") {
-            BadgerEventsView(
+        composable(Screen.Home.route + "/{userId}"+ "/{authToken}") {
+            HomeView(
                 navController,
                 it.arguments?.getString("userId")!!,
                 it.arguments?.getString("authToken")!!
             )
         }
-
     }
 }
 
@@ -46,5 +45,5 @@ sealed class Screen(val route: String) {
     object Login: Screen("login")
     object InterestsSetup: Screen("setup/interests")
     object ProfileSetup: Screen("setup/profile")
-    object Events: Screen("home")
+    object Home: Screen("home")
 }

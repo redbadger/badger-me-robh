@@ -144,11 +144,11 @@ fun BadgerEventsView(
                         }
                     }
                 }
-                Row {
-                    Column(Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Bottom) {
-                        BottomBar(activeTab = 0)
-                    }
-                }
+//                Row {
+//                    Column(Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Bottom) {
+//                        BottomBar(activeTab = 0, navHostController, userId, authToken)
+//                    }
+//                }
             }
         }
     }
