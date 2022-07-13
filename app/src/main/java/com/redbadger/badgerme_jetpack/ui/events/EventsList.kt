@@ -25,8 +25,7 @@ import java.util.*
 
 @Composable
 fun EventsList(events: List<BadgerEvent>, currentUser: BadgerUser, viewModel: EventsViewModel, scrollState: LazyListState) {
-    Column(modifier = Modifier
-        .fillMaxHeight()) {
+    Column(modifier = Modifier.fillMaxHeight()) {
         if (events.isEmpty()) {
             Column(modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Center) {
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
@@ -50,10 +49,14 @@ fun EventsList(events: List<BadgerEvent>, currentUser: BadgerUser, viewModel: Ev
                 .now()
                 .get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear())
 
-            LazyColumn(verticalArrangement = Arrangement.Top, state = scrollState) {
+            LazyColumn(
+                verticalArrangement = Arrangement.Top,
+                state = scrollState,
+                contentPadding = PaddingValues(top = 75.dp)
+            ) {
                 itemsIndexed(events) { index, event ->
                     if (index == 0) Spacer(modifier = Modifier.padding(top = 16.dp))
-                    Row(Modifier.fillMaxWidth()) {
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
                         Column {
                             Column(verticalArrangement = Arrangement.Top) {
                                 if (LocalDateTime.parse(event.startTime).toLocalDate()
@@ -74,7 +77,7 @@ fun EventsList(events: List<BadgerEvent>, currentUser: BadgerUser, viewModel: Ev
                             }
                         }
                     }
-                    Row(Modifier.fillMaxWidth()) {
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
                         Column {
                             Column(verticalArrangement = Arrangement.Top) {
                                 val eventWeek = LocalDateTime
@@ -103,7 +106,7 @@ fun EventsList(events: List<BadgerEvent>, currentUser: BadgerUser, viewModel: Ev
                             }
                         }
                     }
-                    Row(Modifier.fillMaxWidth()) {
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
                         Column {
                             Column(verticalArrangement = Arrangement.Top) {
                                 val eventWeek = LocalDateTime
@@ -129,7 +132,7 @@ fun EventsList(events: List<BadgerEvent>, currentUser: BadgerUser, viewModel: Ev
                             }
                         }
                     }
-                    Row(Modifier.fillMaxWidth()) {
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
                         Column {
                             Column(verticalArrangement = Arrangement.Top) {
                                 val eventWeek = LocalDateTime

@@ -37,43 +37,33 @@ fun BadgerEventsView(
 
     viewModel.updateScrollPosition(scrollState.firstVisibleItemIndex)
 
-    Box {
-        Column {
-            ScrollableAppBar(viewModel, scrollUpState)
-            Row {
-                Column(modifier = Modifier
-                    .fillMaxHeight()
-                    .padding(horizontal = 16.dp),
-                    verticalArrangement = Arrangement.Top
-                ) {
-                    EventsList(
-                        getEvents().filter {
-                            when (viewModel.timeFilter.value) {
-                                "Today" -> {
-                                    LocalDateTime
-                                        .parse(it.startTime).toLocalDate()
-                                        .isEqual(LocalDate.now())
-                                }
-                                "Upcoming" -> {
-                                    LocalDateTime
-                                        .parse(it.startTime).toLocalDate()
-                                        .isAfter(LocalDate.now())
-                                }
-                                else -> false
-                            }
-                        }.sortedBy { it.startTime },
-                        BadgerUser(
-                        "1",
-                        "Hugh",
-                        "Mann",
-                        "hugh.mann@red-badger.com"
-                        ),
-                        viewModel,
-                        scrollState
-                    )
+    Box(modifier = Modifier.fillMaxSize()) {
+        EventsList(
+            getEvents().filter {
+                when (viewModel.timeFilter.value) {
+                    "Today" -> {
+                        LocalDateTime
+                            .parse(it.startTime).toLocalDate()
+                            .isEqual(LocalDate.now())
+                    }
+                    "Upcoming" -> {
+                        LocalDateTime
+                            .parse(it.startTime).toLocalDate()
+                            .isAfter(LocalDate.now())
+                    }
+                    else -> false
                 }
-            }
-        }
+            }.sortedBy { it.startTime },
+            BadgerUser(
+                "1",
+                "Hugh",
+                "Mann",
+                "hugh.mann@red-badger.com"
+            ),
+            viewModel,
+            scrollState
+        )
+        ScrollableAppBar(viewModel, scrollUpState)
     }
 }
 
