@@ -10,8 +10,6 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
@@ -21,7 +19,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -29,7 +26,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.redbadger.badgerme_jetpack.R
 import com.redbadger.badgerme_jetpack.ui.setup.MultiselectInterest
-import com.redbadger.badgerme_jetpack.ui.BottomBar
 import com.redbadger.badgerme_jetpack.ui.theme.BadgerMe_JetpackTheme
 import com.redbadger.badgerme_jetpack.ui.theme.uiLightest
 import com.redbadger.badgerme_jetpack.util.BadgerEvent

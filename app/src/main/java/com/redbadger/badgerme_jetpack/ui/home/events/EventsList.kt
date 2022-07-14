@@ -22,7 +22,12 @@ import java.time.temporal.WeekFields
 import java.util.*
 
 @Composable
-fun EventsList(events: List<BadgerEvent>, currentUser: BadgerUser, viewModel: EventsViewModel) {
+fun EventsList(
+    events: List<BadgerEvent>,
+    currentUser: BadgerUser,
+    viewModel: EventsViewModel,
+    scrollState: LazyListState
+) {
     Column {
         if (events.isEmpty()) {
             Column(modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Center) {
