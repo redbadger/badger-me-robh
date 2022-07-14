@@ -1,4 +1,4 @@
-package com.redbadger.badgerme_jetpack.ui.events
+package com.redbadger.badgerme_jetpack.ui.home.events
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -6,8 +6,6 @@ import androidx.compose.foundation.lazy.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,8 +22,8 @@ import java.time.temporal.WeekFields
 import java.util.*
 
 @Composable
-fun EventsList(events: List<BadgerEvent>, currentUser: BadgerUser, viewModel: EventsViewModel, scrollState: LazyListState) {
-    Column(modifier = Modifier.fillMaxHeight()) {
+fun EventsList(events: List<BadgerEvent>, currentUser: BadgerUser, viewModel: EventsViewModel) {
+    Column {
         if (events.isEmpty()) {
             Column(modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Center) {
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {

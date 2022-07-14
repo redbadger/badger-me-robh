@@ -1,4 +1,4 @@
-package com.redbadger.badgerme_jetpack.ui.events
+package com.redbadger.badgerme_jetpack.ui.home.events
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
@@ -29,6 +29,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.redbadger.badgerme_jetpack.R
 import com.redbadger.badgerme_jetpack.ui.setup.MultiselectInterest
+import com.redbadger.badgerme_jetpack.ui.BottomBar
 import com.redbadger.badgerme_jetpack.ui.theme.BadgerMe_JetpackTheme
 import com.redbadger.badgerme_jetpack.ui.theme.uiLightest
 import com.redbadger.badgerme_jetpack.util.BadgerEvent
@@ -67,9 +68,9 @@ fun BadgerEventsView(
                     .fillMaxWidth()
                     .height(
                         when (modalContent.value) {
-                            "filter" -> 480.dp
+                            "filter" -> 520.dp
                             "add" -> 700.dp
-                            else -> 200.dp
+                            else -> 220.dp
                         }
                     )
                     .background(color = uiLightest)
@@ -229,14 +230,15 @@ fun BadgerEventsView(
         Row(
             Modifier
                 .fillMaxWidth()
-                .padding(end = 16.dp), horizontalArrangement = Arrangement.End) {
+                .padding(end = 16.dp, bottom = 14.dp), horizontalArrangement = Arrangement.End) {
             FloatingActionButton(
                 onClick = {
                     modalContent.value = "add"
                     coroutineScope.launch {
                         bottomSheetScaffoldState.bottomSheetState.expand()
                     }
-                }
+                },
+                        backgroundColor = MaterialTheme.colors.primary
             ) {
                 Icon(Icons.Filled.Add, "")
             }

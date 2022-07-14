@@ -1,4 +1,4 @@
-package com.redbadger.badgerme_jetpack.ui.events
+package com.redbadger.badgerme_jetpack.ui.home.events
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
