@@ -1,4 +1,4 @@
-package com.redbadger.badgerme_jetpack.ui.events
+package com.redbadger.badgerme_jetpack.ui.home.events
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -23,6 +23,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.redbadger.badgerme_jetpack.R
 import com.redbadger.badgerme_jetpack.ui.setup.MultiselectInterest
+import com.redbadger.badgerme_jetpack.ui.BottomBar
 import com.redbadger.badgerme_jetpack.ui.theme.BadgerMe_JetpackTheme
 import com.redbadger.badgerme_jetpack.ui.theme.uiLightest
 import com.redbadger.badgerme_jetpack.util.BadgerEvent

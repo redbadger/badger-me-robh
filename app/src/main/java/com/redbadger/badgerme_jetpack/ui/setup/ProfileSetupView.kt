@@ -129,7 +129,7 @@ fun ProfileSetupView(
                         onClick = {
                           /* TODO: There doesn't actually seem to be an endpoint to send this info to */
                             navHostController?.navigate(
-                                "${Screen.Events.route}/${userId}/${authToken}"
+                                "${Screen.Home.route}/${userId}/${authToken}"
                             )
                         },
                         enabled = bio.value.isNotBlank(),
