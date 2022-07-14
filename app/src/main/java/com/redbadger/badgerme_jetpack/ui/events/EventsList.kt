@@ -56,13 +56,15 @@ fun EventsList(events: List<BadgerEvent>, currentUser: BadgerUser, viewModel: Ev
                 itemsIndexed(events) { index, event ->
                     if (index == 0) Spacer(modifier = Modifier.padding(top = 16.dp))
                     Row(Modifier.fillMaxWidth()) {
+//                        Tomorrow
                         Column {
                             Column(verticalArrangement = Arrangement.Top) {
                                 if (LocalDateTime.parse(event.startTime).toLocalDate()
                                         .isEqual(LocalDate.now().plusDays(1))
                                 ) {
                                     if (viewModel.tomorrow.value == -1) viewModel.tomorrow.value = index
-                                    if (viewModel.timeFilter.value != "Today" && viewModel.tomorrow.value == index) {
+                                    if (viewModel.timeFilter.value != "Today"
+                                        && viewModel.tomorrow.value == index) {
                                         Text(
                                             modifier = Modifier.padding(top = 8.dp),
                                             text = "Tomorrow",
@@ -77,6 +79,7 @@ fun EventsList(events: List<BadgerEvent>, currentUser: BadgerUser, viewModel: Ev
                         }
                     }
                     Row(Modifier.fillMaxWidth()) {
+//                         This week
                         Column {
                             Column(verticalArrangement = Arrangement.Top) {
                                 val eventWeek = LocalDateTime
@@ -106,6 +109,7 @@ fun EventsList(events: List<BadgerEvent>, currentUser: BadgerUser, viewModel: Ev
                         }
                     }
                     Row(Modifier.fillMaxWidth()) {
+//                        Next week
                         Column {
                             Column(verticalArrangement = Arrangement.Top) {
                                 val eventWeek = LocalDateTime
@@ -132,6 +136,7 @@ fun EventsList(events: List<BadgerEvent>, currentUser: BadgerUser, viewModel: Ev
                         }
                     }
                     Row(Modifier.fillMaxWidth()) {
+//                        Later
                         Column {
                             Column(verticalArrangement = Arrangement.Top) {
                                 val eventWeek = LocalDateTime
