@@ -59,9 +59,9 @@ fun BadgerEventsView(
                     .fillMaxWidth()
                     .height(
                         when (modalContent.value) {
-                            "filter" -> 480.dp
+                            "filter" -> 520.dp
                             "add" -> 700.dp
-                            else -> 200.dp
+                            else -> 220.dp
                         }
                     )
                     .background(color = uiLightest)
@@ -129,8 +129,8 @@ fun BadgerEventsView(
             }
         }, sheetPeekHeight = 0.dp
     ) {
-        Box {
-            Column() {
+        Box(Modifier.padding(bottom = 40.dp)) {
+            Column {
                 Row(Modifier.fillMaxWidth()) {
                     Column(
                         Modifier
@@ -290,14 +290,15 @@ fun BadgerEventsView(
                 Row(
                     Modifier
                         .fillMaxWidth()
-                        .padding(end = 16.dp), horizontalArrangement = Arrangement.End) {
+                        .padding(end = 16.dp, bottom = 14.dp), horizontalArrangement = Arrangement.End) {
                     FloatingActionButton(
                         onClick = {
                             modalContent.value = "add"
                             coroutineScope.launch {
                                 bottomSheetScaffoldState.bottomSheetState.expand()
                             }
-                        }
+                        },
+                        backgroundColor = MaterialTheme.colors.primary
                     ) {
                         Icon(Icons.Filled.Add, "")
                     }
