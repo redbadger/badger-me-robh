@@ -12,6 +12,13 @@ class EventsViewModel: ViewModel() {
     val nextWeek = mutableStateOf(-1)
     val later = mutableStateOf(-1)
 
+    val food = mutableStateOf(false)
+    val drinks = mutableStateOf(false)
+    val coffee = mutableStateOf(false)
+    val chats =  mutableStateOf(false)
+    val walks =  mutableStateOf(false)
+    val hugs =  mutableStateOf(false)
+
     private var lastScrollIndex = 0
 
     private val _scrollUp = MutableLiveData(false)
