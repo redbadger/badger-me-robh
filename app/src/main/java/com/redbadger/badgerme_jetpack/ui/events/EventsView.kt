@@ -47,8 +47,6 @@ fun BadgerEventsView(
     authToken: String,
     viewModel: EventsViewModel = viewModel()
 ) {
-    val tabs = listOf("Today", "Upcoming")
-    val currentTab = remember { mutableStateOf(0) }
     val interests = listOf<BadgerInterest>()
     val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
         bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed)
