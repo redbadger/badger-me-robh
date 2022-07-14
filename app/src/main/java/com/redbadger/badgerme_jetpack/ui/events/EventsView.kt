@@ -34,6 +34,7 @@ import com.redbadger.badgerme_jetpack.ui.theme.uiLightest
 import com.redbadger.badgerme_jetpack.util.BadgerEvent
 import com.redbadger.badgerme_jetpack.util.BadgerInterest
 import com.redbadger.badgerme_jetpack.util.BadgerUser
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -139,187 +140,121 @@ fun BadgerEventsView(
         }, sheetPeekHeight = 0.dp
     ) {
         Box {
-            Column() {
-                Row(Modifier.fillMaxWidth()) {
-                    Column(
-                        Modifier
-                            .background(color = Color.White)
-                            .padding(start = 16.dp, top = 7.5.dp, end = 16.dp)
-                    ) {
-                        Row(Modifier.fillMaxWidth()) {
-                            Text(
-                                text = "Badger events",
-                                style = MaterialTheme.typography.h3
-                            )
-                        }
-                        Row(
-                            modifier = Modifier
-                                .height(48.dp)
-                                .background(color = Color.White)
-                                .fillMaxWidth()
-                        ) {
-                            TabRow(
-                                selectedTabIndex = currentTab.value,
-                                backgroundColor = Color.White,
-                                contentColor = MaterialTheme.colors.primary,
-                                modifier = Modifier.width(210.dp)
-                            ) {
-                                tabs.forEachIndexed { index, it ->
-                                    Tab(
-                                        selected = true,
-                                        onClick = {
-                                            viewModel.timeFilter.value = it
-                                            currentTab.value = index
-                                        },
-                                        text = {
-                                            Text(
-                                                text = it,
-                                                style = MaterialTheme.typography.button,
-                                                color = Color.Black
-                                            )
-                                        }
-                                    )
-                                }
-                            }
-                            Column(
-                                modifier = Modifier.fillMaxHeight(),
-                                verticalArrangement = Arrangement.Center
-                            ) {
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.End
-                                ) {
-                                    Image(
-                                        painter = painterResource(
-                                            id = R.drawable.preferences__state_enabled
-                                        ),
-                                        contentDescription = "settings",
-                                        modifier = Modifier
-                                            .size(24.dp)
-                                            .clickable {
-                                                modalContent.value = "filter"
-                                                coroutineScope.launch {
-                                                    bottomSheetScaffoldState.bottomSheetState.expand()
-                                                }
-                                            }
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
-                Row {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .padding(horizontal = 16.dp),
-                        verticalArrangement = Arrangement.Top
-                    ) {
-                        EventsList(
-                            getEvents().filter {
+            EventsList(
+                getEvents().filter {
 //                                Filter by time
-                                when (viewModel.timeFilter.value) {
-                                    "Today" -> {
-                                        viewModel.tomorrow.value = -1
-                                        viewModel.thisWeek.value = -1
-                                        viewModel.nextWeek.value = -1
-                                        viewModel.later.value = -1
+                    when (viewModel.timeFilter.value) {
+                        "Today" -> {
+                            viewModel.tomorrow.value = -1
+                            viewModel.thisWeek.value = -1
+                            viewModel.nextWeek.value = -1
+                            viewModel.later.value = -1
 
-                                        LocalDateTime
-                                            .parse(it.startTime).toLocalDate()
-                                            .isEqual(LocalDate.now())
-                                    }
-                                    "Upcoming" -> {
-                                        viewModel.tomorrow.value = -1
-                                        viewModel.thisWeek.value = -1
-                                        viewModel.nextWeek.value = -1
-                                        viewModel.later.value = -1
-
-                                        LocalDateTime
-                                            .parse(it.startTime).toLocalDate()
-                                            .isAfter(LocalDate.now())
-                                    }
-                                    else -> false
-                                }
-                            }.filter {
-//                                Filter by interest
-                                /*TODO Need to properly get BadgerInterests from the API ala InterestSetup*/
-                                (viewModel.food.value && it.tags.contains(
-                                    BadgerInterest(
-                                        "0",
-                                        "Food"
-                                    )
-                                )) ||
-                                (viewModel.drinks.value && it.tags.contains(
-                                    BadgerInterest(
-                                        "1",
-                                        "Drinks"
-                                    )
-                                )) ||
-                                (viewModel.coffee.value && it.tags.contains(
-                                    BadgerInterest(
-                                        "2",
-                                        "Coffee"
-                                    )
-                                )) ||
-                                (viewModel.chats.value && it.tags.contains(
-                                    BadgerInterest(
-                                        "3",
-                                        "Chats"
-                                    )
-                                )) ||
-                                (viewModel.walks.value && it.tags.contains(
-                                    BadgerInterest(
-                                        "4",
-                                        "Walks"
-                                    )
-                                )) ||
-                                (viewModel.hugs.value && it.tags.contains(
-                                    BadgerInterest(
-                                        "5",
-                                        "Hugs"
-                                    )
-                                ))
-                            }.sortedBy { it.startTime },
-                            BadgerUser(
-                                "1",
-                                "Hugh",
-                                "Mann",
-                                "hugh.mann@red-badger.com"
-                            ),
-                            viewModel,
-                            scrollState
-                        )
-                        ScrollableAppBar(viewModel, scrollUpState)
-                    }
-                }
-            }
-            Column(
-                Modifier
-                    .fillMaxHeight()
-                    .padding(bottom = 14.dp), verticalArrangement = Arrangement.Bottom) {
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(end = 16.dp), horizontalArrangement = Arrangement.End) {
-                    FloatingActionButton(
-                        onClick = {
-                            modalContent.value = "add"
-                            coroutineScope.launch {
-                                bottomSheetScaffoldState.bottomSheetState.expand()
-                            }
+                            LocalDateTime
+                                .parse(it.startTime).toLocalDate()
+                                .isEqual(LocalDate.now())
                         }
-                    ) {
-                        Icon(Icons.Filled.Add, "")
+                        "Upcoming" -> {
+                            viewModel.tomorrow.value = -1
+                            viewModel.thisWeek.value = -1
+                            viewModel.nextWeek.value = -1
+                            viewModel.later.value = -1
+
+                            LocalDateTime
+                                .parse(it.startTime).toLocalDate()
+                                .isAfter(LocalDate.now())
+                        }
+                        else -> false
+                    }
+                }.filter {
+//                                Filter by interest
+                    /*TODO Need to properly get BadgerInterests from the API ala InterestSetup*/
+                    (viewModel.food.value && it.tags.contains(
+                        BadgerInterest(
+                            "0",
+                            "Food"
+                        )
+                    )) ||
+                    (viewModel.drinks.value && it.tags.contains(
+                        BadgerInterest(
+                            "1",
+                            "Drinks"
+                        )
+                    )) ||
+                    (viewModel.coffee.value && it.tags.contains(
+                        BadgerInterest(
+                            "2",
+                            "Coffee"
+                        )
+                    )) ||
+                    (viewModel.chats.value && it.tags.contains(
+                        BadgerInterest(
+                            "3",
+                            "Chats"
+                        )
+                    )) ||
+                    (viewModel.walks.value && it.tags.contains(
+                        BadgerInterest(
+                            "4",
+                            "Walks"
+                        )
+                    )) ||
+                    (viewModel.hugs.value && it.tags.contains(
+                        BadgerInterest(
+                            "5",
+                            "Hugs"
+                        )
+                    ))
+                }.sortedBy { it.startTime },
+                BadgerUser(
+                    "1",
+                    "Hugh",
+                    "Mann",
+                    "hugh.mann@red-badger.com"
+                ),
+                viewModel,
+                scrollState
+            )
+            ScrollableAppBar(
+                viewModel,
+                scrollUpState,
+                coroutineScope,
+                modalContent,
+                bottomSheetScaffoldState
+            )
+        }
+    }
+    Column(
+        Modifier
+            .fillMaxHeight()
+            .padding(bottom = 14.dp), verticalArrangement = Arrangement.Bottom) {
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .padding(end = 16.dp), horizontalArrangement = Arrangement.End) {
+            FloatingActionButton(
+                onClick = {
+                    modalContent.value = "add"
+                    coroutineScope.launch {
+                        bottomSheetScaffoldState.bottomSheetState.expand()
                     }
                 }
+            ) {
+                Icon(Icons.Filled.Add, "")
             }
         }
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ScrollableAppBar(viewModel: EventsViewModel = viewModel(), scrollUpState: State<Boolean?>) {
+fun ScrollableAppBar(
+    viewModel: EventsViewModel = viewModel(),
+    scrollUpState: State<Boolean?>,
+    coroutineScope: CoroutineScope,
+    modalContent: MutableState<String>,
+    bottomSheetScaffoldState: BottomSheetScaffoldState
+) {
     val tabs = listOf("Today", "Upcoming")
     val currentTab = remember { mutableStateOf(0) }
 
@@ -387,7 +322,12 @@ fun ScrollableAppBar(viewModel: EventsViewModel = viewModel(), scrollUpState: St
                                 contentDescription = "settings",
                                 modifier = Modifier
                                     .size(24.dp)
-                                    .clickable { /*TODO*/ }
+                                    .clickable {
+                                        modalContent.value = "filter"
+                                        coroutineScope.launch {
+                                            bottomSheetScaffoldState.bottomSheetState.expand()
+                                        }
+                                    }
                             )
                         }
                     }
@@ -555,6 +495,158 @@ fun getEvents(): List<BadgerEvent> {
             ),
             listOf(BadgerInterest("1", "Walks")),
             "2022-09-20T12:00:00","2022-09-20T15:00:00"
+        ),
+        BadgerEvent("Drinking event",
+            BadgerUser(
+                "1",
+                "Hugh",
+                "Mann",
+                "hugh.mann@red-badger.com"
+            ),
+            listOf(
+                BadgerUser(
+                    "2",
+                    "Guy",
+                    "Fellow",
+                    "guy.fellow@red-badger.com"
+                ),
+                BadgerUser(
+                    "3",
+                    "Andy",
+                    "Noether",
+                    "andy.noether@red-badger.com"
+                )
+            ),
+            listOf(BadgerInterest("1", "Drinks")),
+            "2022-09-09T12:00:00","2022-09-20T15:00:00"
+        ),
+        BadgerEvent("Hugs event",
+            BadgerUser(
+                "1",
+                "Hugh",
+                "Mann",
+                "hugh.mann@red-badger.com"
+            ),
+            listOf(),
+            listOf(BadgerInterest("1", "Hugs")),
+            "2022-09-11T12:00:00","2022-09-20T15:00:00"
+        ),
+        BadgerEvent("Chats event",
+            BadgerUser(
+                "1",
+                "Hugh",
+                "Mann",
+                "hugh.mann@red-badger.com"
+            ),
+            listOf(
+                BadgerUser(
+                    "2",
+                    "Guy",
+                    "Fellow",
+                    "guy.fellow@red-badger.com"
+                ),
+                BadgerUser(
+                    "3",
+                    "Andy",
+                    "Noether",
+                    "andy.noether@red-badger.com"
+                )
+            ),
+            listOf(BadgerInterest("1", "Chats")),
+            "2022-09-20T12:00:00","2022-09-20T15:00:00"
+        ),
+        BadgerEvent(
+            "Walking event",
+            BadgerUser(
+                "3",
+                "Andy",
+                "Noether",
+                "andy.noether@red-badger.com"
+            ),
+            listOf(
+                BadgerUser(
+                    "2",
+                    "Guy",
+                    "Fellow",
+                    "guy.fellow@red-badger.com"
+                ),
+                BadgerUser(
+                    "3",
+                    "Andy",
+                    "Noether",
+                    "andy.noether@red-badger.com"
+                ),
+                BadgerUser(
+                    "1",
+                    "Hugh",
+                    "Mann",
+                    "hugh.mann@red-badger.com"
+                )
+            ),
+            listOf(BadgerInterest("4", "Walks")),
+            LocalDateTime.now().plusDays(10).toString(), LocalDateTime.now().plusDays(10).toString()
+        ),
+        BadgerEvent(
+            "Drinking event",
+            BadgerUser(
+                "1",
+                "Hugh",
+                "Mann",
+                "hugh.mann@red-badger.com"
+            ),
+            listOf(
+                BadgerUser(
+                    "2",
+                    "Guy",
+                    "Fellow",
+                    "guy.fellow@red-badger.com"
+                ),
+                BadgerUser(
+                    "3",
+                    "Andy",
+                    "Noether",
+                    "andy.noether@red-badger.com"
+                )
+            ),
+            listOf(BadgerInterest("1", "Drinks")),
+            LocalDateTime.now().plusDays(3).toString(), LocalDateTime.now().plusDays(3).toString()
+        ),
+        BadgerEvent(
+            "Hugs event",
+            BadgerUser(
+                "1",
+                "Hugh",
+                "Mann",
+                "hugh.mann@red-badger.com"
+            ),
+            listOf(),
+            listOf(BadgerInterest("5", "Hugs")),
+            LocalDateTime.now().plusDays(5).toString(), LocalDateTime.now().plusDays(5).toString()
+        ),
+        BadgerEvent(
+            "Chats event",
+            BadgerUser(
+                "1",
+                "Hugh",
+                "Mann",
+                "hugh.mann@red-badger.com"
+            ),
+            listOf(
+                BadgerUser(
+                    "2",
+                    "Guy",
+                    "Fellow",
+                    "guy.fellow@red-badger.com"
+                ),
+                BadgerUser(
+                    "3",
+                    "Andy",
+                    "Noether",
+                    "andy.noether@red-badger.com"
+                )
+            ),
+            listOf(BadgerInterest("3", "Chats")),
+            LocalDateTime.now().plusDays(14).toString(), LocalDateTime.now().plusDays(14).toString()
         ),
         BadgerEvent("Drinking event",
             BadgerUser(
