@@ -7,9 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.redbadger.badgerme_jetpack.ui.setup.InterestSetupViewModel
-import com.redbadger.badgerme_jetpack.util.BadgerApiInterface
-import com.redbadger.badgerme_jetpack.util.BadgerEvent
-import com.redbadger.badgerme_jetpack.util.RetrofitHelper
+import com.redbadger.badgerme_jetpack.util.*
 import kotlinx.coroutines.launch
 
 class EventsViewModel: ViewModel() {
@@ -48,8 +46,21 @@ class EventsViewModel: ViewModel() {
         viewModelScope.launch {
             val response = badgerApi.getActivities(authToken)
             if (response.isSuccessful) {
-                response.body()!!.forEach{
-                    activities.add(it)
+                response.body()!!.forEach{ activity ->
+                    activities.add(
+                        BadgerEvent(
+                            name = activity.name,
+                            startTime = activity.start_time,
+                            endTime = activity.end_time,
+                            location = activity.location,
+                            created_by = BadgerUser(
+                                activity.userId,
+                                "test",
+                                "guy",
+                                "test@red-badger.com"
+                            )
+                        )
+                    )
                 }
                 completed.value = true
             }

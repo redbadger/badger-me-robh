@@ -17,7 +17,7 @@ import com.redbadger.badgerme_jetpack.util.BadgerEvent
 import com.redbadger.badgerme_jetpack.util.BadgerInterest
 import com.redbadger.badgerme_jetpack.util.BadgerUser
 import java.time.LocalDate
-import java.time.LocalDateTime
+import java.time.OffsetDateTime
 import java.time.temporal.WeekFields
 import java.util.*
 
@@ -94,7 +94,7 @@ fun EventsList(
 //                        Tomorrow
                             Column {
                                 Column(verticalArrangement = Arrangement.Top) {
-                                    if (LocalDateTime.parse(event.startTime).toLocalDate()
+                                    if (OffsetDateTime.parse(event.startTime).toLocalDate()
                                             .isEqual(LocalDate.now().plusDays(1))
                                     ) {
                                         if (viewModel.tomorrow.value == -1) viewModel.tomorrow.value =
@@ -119,14 +119,14 @@ fun EventsList(
 //                         This week
                             Column {
                                 Column(verticalArrangement = Arrangement.Top) {
-                                    val eventWeek = LocalDateTime
+                                    val eventWeek = OffsetDateTime
                                         .parse(event.startTime)
                                         .toLocalDate()
                                         .get(
                                             WeekFields.of(Locale.getDefault())
                                                 .weekOfWeekBasedYear()
                                         )
-                                    if (eventWeek == currentWeek && !LocalDateTime
+                                    if (eventWeek == currentWeek && !OffsetDateTime
                                             .parse(event.startTime).toLocalDate()
                                             .isEqual(LocalDate.now().plusDays(1))
                                     ) {
@@ -150,7 +150,7 @@ fun EventsList(
 //                        Next week
                             Column {
                                 Column(verticalArrangement = Arrangement.Top) {
-                                    val eventWeek = LocalDateTime
+                                    val eventWeek = OffsetDateTime
                                         .parse(event.startTime)
                                         .toLocalDate()
                                         .get(
@@ -178,7 +178,7 @@ fun EventsList(
 //                        Later
                             Column {
                                 Column(verticalArrangement = Arrangement.Top) {
-                                    val eventWeek = LocalDateTime
+                                    val eventWeek = OffsetDateTime
                                         .parse(event.startTime)
                                         .toLocalDate()
                                         .get(

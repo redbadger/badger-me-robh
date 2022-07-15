@@ -43,5 +43,19 @@ interface BadgerApiInterface {
     @GET("activities")
     suspend fun getActivities(
         @Header("authorization") token: String
-    ): Response<List<BadgerEvent>>
+    ): Response<List<ApiActivity>>
+
+    @POST("activities")
+    suspend fun addActivity(
+        @Header("authorization") token: String,
+        @Body activity: ApiActivity
+    ): Response<Void>
 }
+
+data class ApiActivity (
+    var name: String,
+    var userId: String,
+    var location: String,
+    var start_time: String,
+    var end_time: String
+)
