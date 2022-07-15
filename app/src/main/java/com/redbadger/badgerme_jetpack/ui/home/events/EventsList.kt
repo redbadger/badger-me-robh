@@ -239,7 +239,7 @@ fun EventsListPreview() {
                         )
                     ),
                     listOf(BadgerInterest("1", "Food")),
-                    "2022-06-20T16:00:00","2022-07-20T19:00:00"
+                    "2022-06-20T16:00:00","2022-07-20T19:00:00", "Somewhere"
                 ),
                 BadgerEvent(
                     "Coffee event",
@@ -251,7 +251,7 @@ fun EventsListPreview() {
                     ),
                     listOf(),
                     listOf(BadgerInterest("1", "Coffee")),
-                    "2022-07-20T12:00:00","2022-07-20T15:00:00"
+                    "2022-07-20T12:00:00","2022-07-20T15:00:00", "Somewhere"
                 ),
                 BadgerEvent(
                     "Mixed event",
@@ -279,7 +279,7 @@ fun EventsListPreview() {
                         BadgerInterest("1","Food" ),
                         BadgerInterest("2", "Walks" )
                     ),
-                    "2022-07-06T16:00:00","2022-07-07T19:00:00"
+                    "2022-07-06T16:00:00","2022-07-07T19:00:00", "Somewhere"
                 ),
                 BadgerEvent("Walking event",
                     BadgerUser(
@@ -309,7 +309,7 @@ fun EventsListPreview() {
                         )
                     ),
                     listOf(BadgerInterest("1", "Walks")),
-                    "2022-07-20T12:00:00","2022-07-20T15:00:00"
+                    "2022-07-20T12:00:00","2022-07-20T15:00:00", "Somewhere"
                 ),
                 BadgerEvent("Drinking event",
                     BadgerUser(
@@ -333,7 +333,7 @@ fun EventsListPreview() {
                         )
                     ),
                     listOf(BadgerInterest("1", "Drinks")),
-                    "2022-07-20T12:00:00","2022-07-20T15:00:00"
+                    "2022-07-20T12:00:00","2022-07-20T15:00:00", "Somewhere"
                 ),
                 BadgerEvent("Hugs event",
                     BadgerUser(
@@ -344,7 +344,7 @@ fun EventsListPreview() {
                     ),
                     listOf(),
                     listOf(BadgerInterest("1", "Hugs")),
-                    "2022-07-20T12:00:00","2022-07-20T15:00:00"
+                    "2022-07-20T12:00:00","2022-07-20T15:00:00", "Somewhere"
                 ),
                 BadgerEvent("Chats event",
                     BadgerUser(
@@ -368,7 +368,7 @@ fun EventsListPreview() {
                         )
                     ),
                     listOf(BadgerInterest("1", "Chats")),
-                    "2022-07-20T12:00:00","2022-07-20T15:00:00"
+                    "2022-07-20T12:00:00","2022-07-20T15:00:00", "Somewhere"
                 )
             ),
             BadgerUser(

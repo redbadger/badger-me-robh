@@ -446,7 +446,9 @@ fun getEvents(): List<BadgerEvent> {
                 )
             ),
             listOf(BadgerInterest("0", "Food")),
-            LocalDateTime.now().plusHours(1).toString(), LocalDateTime.now().plusHours(2).toString()
+            LocalDateTime.now().plusHours(1).toString(),
+            LocalDateTime.now().plusHours(2).toString(),
+            "Somewhere"
         ),
         BadgerEvent(
             "Coffee event",
@@ -458,7 +460,9 @@ fun getEvents(): List<BadgerEvent> {
             ),
             listOf(),
             listOf(BadgerInterest("2", "Coffee")),
-            LocalDateTime.now().plusDays(1).plusHours(1).toString(), LocalDateTime.now().plusDays(1).plusHours(1).toString()
+            LocalDateTime.now().plusDays(1).plusHours(1).toString(),
+            LocalDateTime.now().plusDays(1).plusHours(1).toString(),
+            "Somewhere"
         ),
         BadgerEvent(
             "Mixed event",
@@ -486,7 +490,9 @@ fun getEvents(): List<BadgerEvent> {
                 BadgerInterest("0", "Food"),
                 BadgerInterest("4", "Walks")
             ),
-            LocalDateTime.now().plusDays(6).toString(), LocalDateTime.now().plusDays(6).toString()
+            LocalDateTime.now().plusDays(6).toString(),
+            LocalDateTime.now().plusDays(6).toString(),
+            "Somewhere"
         ),
         BadgerEvent("Walking event",
             BadgerUser(
@@ -516,7 +522,9 @@ fun getEvents(): List<BadgerEvent> {
                 )
             ),
             listOf(BadgerInterest("1", "Walks")),
-            "2022-09-20T12:00:00","2022-09-20T15:00:00"
+            "2022-09-20T12:00:00",
+            "2022-09-20T15:00:00",
+            "Somewhere"
         ),
         BadgerEvent("Drinking event",
             BadgerUser(
@@ -540,7 +548,9 @@ fun getEvents(): List<BadgerEvent> {
                 )
             ),
             listOf(BadgerInterest("1", "Drinks")),
-            "2022-09-09T12:00:00","2022-09-20T15:00:00"
+            "2022-09-09T12:00:00",
+            "2022-09-20T15:00:00",
+            "Somewhere"
         ),
         BadgerEvent("Hugs event",
             BadgerUser(
@@ -551,7 +561,9 @@ fun getEvents(): List<BadgerEvent> {
             ),
             listOf(),
             listOf(BadgerInterest("1", "Hugs")),
-            "2022-09-11T12:00:00","2022-09-20T15:00:00"
+            "2022-09-11T12:00:00",
+            "2022-09-20T15:00:00",
+            "Somewhere"
         ),
         BadgerEvent("Chats event",
             BadgerUser(
@@ -575,7 +587,9 @@ fun getEvents(): List<BadgerEvent> {
                 )
             ),
             listOf(BadgerInterest("1", "Chats")),
-            "2022-09-20T12:00:00","2022-09-20T15:00:00"
+            "2022-09-20T12:00:00",
+            "2022-09-20T15:00:00",
+            "Somewhere"
         ),
         BadgerEvent(
             "Walking event",
@@ -606,7 +620,9 @@ fun getEvents(): List<BadgerEvent> {
                 )
             ),
             listOf(BadgerInterest("4", "Walks")),
-            LocalDateTime.now().plusDays(10).toString(), LocalDateTime.now().plusDays(10).toString()
+            LocalDateTime.now().plusDays(10).toString(),
+            LocalDateTime.now().plusDays(10).toString(),
+            "Somewhere"
         ),
         BadgerEvent(
             "Drinking event",
@@ -631,7 +647,9 @@ fun getEvents(): List<BadgerEvent> {
                 )
             ),
             listOf(BadgerInterest("1", "Drinks")),
-            LocalDateTime.now().plusDays(3).toString(), LocalDateTime.now().plusDays(3).toString()
+            LocalDateTime.now().plusDays(3).toString(),
+            LocalDateTime.now().plusDays(3).toString(),
+            "Somewhere"
         ),
         BadgerEvent(
             "Hugs event",
@@ -643,7 +661,9 @@ fun getEvents(): List<BadgerEvent> {
             ),
             listOf(),
             listOf(BadgerInterest("5", "Hugs")),
-            LocalDateTime.now().plusDays(5).toString(), LocalDateTime.now().plusDays(5).toString()
+            LocalDateTime.now().plusDays(5).toString(),
+            LocalDateTime.now().plusDays(5).toString(),
+            "Somewhere"
         ),
         BadgerEvent(
             "Chats event",
@@ -668,7 +688,9 @@ fun getEvents(): List<BadgerEvent> {
                 )
             ),
             listOf(BadgerInterest("3", "Chats")),
-            LocalDateTime.now().plusDays(14).toString(), LocalDateTime.now().plusDays(14).toString()
+            LocalDateTime.now().plusDays(14).toString(),
+            LocalDateTime.now().plusDays(14).toString(),
+            "Somewhere"
         ),
         BadgerEvent("Drinking event",
             BadgerUser(
@@ -692,7 +714,7 @@ fun getEvents(): List<BadgerEvent> {
                 )
             ),
             listOf(BadgerInterest("1", "Drinks")),
-            "2022-09-09T12:00:00","2022-09-20T15:00:00"
+            "2022-09-09T12:00:00","2022-09-20T15:00:00", "Somewhere"
         ),
         BadgerEvent("Hugs event",
             BadgerUser(
@@ -703,7 +725,7 @@ fun getEvents(): List<BadgerEvent> {
             ),
             listOf(),
             listOf(BadgerInterest("1", "Hugs")),
-            "2022-09-11T12:00:00","2022-09-20T15:00:00"
+            "2022-09-11T12:00:00","2022-09-20T15:00:00", "Somewhere"
         ),
         BadgerEvent("Chats event",
             BadgerUser(
@@ -727,7 +749,7 @@ fun getEvents(): List<BadgerEvent> {
                 )
             ),
             listOf(BadgerInterest("1", "Chats")),
-            "2022-09-20T12:00:00","2022-09-20T15:00:00"
+            "2022-09-20T12:00:00","2022-09-20T15:00:00", "Somewhere"
         ),
         BadgerEvent(
             "Walking event",
@@ -758,7 +780,9 @@ fun getEvents(): List<BadgerEvent> {
                 )
             ),
             listOf(BadgerInterest("4", "Walks")),
-            LocalDateTime.now().plusDays(10).toString(), LocalDateTime.now().plusDays(10).toString()
+            LocalDateTime.now().plusDays(10).toString(),
+            LocalDateTime.now().plusDays(10).toString(),
+            "Somewhere"
         ),
         BadgerEvent(
             "Drinking event",
@@ -783,7 +807,9 @@ fun getEvents(): List<BadgerEvent> {
                 )
             ),
             listOf(BadgerInterest("1", "Drinks")),
-            LocalDateTime.now().plusDays(3).toString(), LocalDateTime.now().plusDays(3).toString()
+            LocalDateTime.now().plusDays(3).toString(),
+            LocalDateTime.now().plusDays(3).toString(),
+            "Somewhere"
         ),
         BadgerEvent(
             "Hugs event",
@@ -795,7 +821,9 @@ fun getEvents(): List<BadgerEvent> {
             ),
             listOf(),
             listOf(BadgerInterest("5", "Hugs")),
-            LocalDateTime.now().plusDays(5).toString(), LocalDateTime.now().plusDays(5).toString()
+            LocalDateTime.now().plusDays(5).toString(),
+            LocalDateTime.now().plusDays(5).toString(),
+            "Somewhere"
         ),
         BadgerEvent(
             "Chats event",
@@ -820,7 +848,9 @@ fun getEvents(): List<BadgerEvent> {
                 )
             ),
             listOf(BadgerInterest("3", "Chats")),
-            LocalDateTime.now().plusDays(14).toString(), LocalDateTime.now().plusDays(14).toString()
+            LocalDateTime.now().plusDays(14).toString(),
+            LocalDateTime.now().plusDays(14).toString(),
+            "Somewhere"
         )
     )
 }

@@ -36,8 +36,8 @@ fun EventCard(
         "Coffee" -> R.drawable.activity_coffee
         else -> R.drawable.activity_mixed
     } else R.drawable.activity_mixed
-    val going = (event.attendees.indexOf(currentUser) > -1) or (event.owner == currentUser)
-    val attendanceList = (if (going) "You " else "${event.owner.first_name} ${event.owner.last_name} ") +
+    val going = (event.attendees.indexOf(currentUser) > -1) or (event.created_by == currentUser)
+    val attendanceList = (if (going) "You " else "${event.created_by.first_name} ${event.created_by.last_name} ") +
             (if (event.attendees.isNotEmpty()) "& ${event.attendees.size} others " else "") +
             (if (going) "are " else "is ") + "going"
 
@@ -58,7 +58,7 @@ fun EventCard(
                         )
                     }
                     Row (modifier = Modifier.width(239.dp)) {
-                        ChipGroup(event.tags, going, event.owner == currentUser)
+                        ChipGroup(event.tags, going, event.created_by == currentUser)
                     }
                 }
             }
@@ -153,7 +153,7 @@ fun PreviewEventCard() {
                         )
                     ),
                     listOf(BadgerInterest("1", "Food")),
-                    "",""
+                    "","", "Somewhere"
                 ),
                 BadgerUser(
                     "1",
@@ -173,7 +173,7 @@ fun PreviewEventCard() {
                     ),
                     listOf(),
                     listOf(BadgerInterest("1", "Coffee")),
-                    "",""
+                    "","", "Somewhere"
                 ),
                 BadgerUser(
                     "1",
@@ -209,7 +209,7 @@ fun PreviewEventCard() {
                         BadgerInterest("1","Food" ),
                         BadgerInterest("2", "Walks" )
                     ),
-                    "",""
+                    "","", "Somewhere"
                 ),
                 BadgerUser(
                     "1",
@@ -232,7 +232,7 @@ fun PreviewEventCard() {
                         BadgerInterest("1","Food" ),
                         BadgerInterest("2", "Walks" )
                     ),
-                    "",""
+                    "","", "Somewhere"
                 ),
                 BadgerUser(
                     "1",
