@@ -1,11 +1,23 @@
 package com.redbadger.badgerme_jetpack.ui.home.events
 
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.redbadger.badgerme_jetpack.ui.setup.InterestSetupViewModel
+import com.redbadger.badgerme_jetpack.util.BadgerApiInterface
+import com.redbadger.badgerme_jetpack.util.BadgerEvent
+import com.redbadger.badgerme_jetpack.util.RetrofitHelper
+import kotlinx.coroutines.launch
 
 class EventsViewModel: ViewModel() {
+    private val badgerApi = RetrofitHelper.getInstance().create(BadgerApiInterface::class.java)
+    val activities = mutableListOf<BadgerEvent>()
+
+    val error = mutableStateOf(false)
+
     val timeFilter = mutableStateOf("Today")
     val tomorrow = mutableStateOf(-1)
     val thisWeek = mutableStateOf(-1)
@@ -30,5 +42,20 @@ class EventsViewModel: ViewModel() {
 
         _scrollUp.value = newScrollIndex > lastScrollIndex
         lastScrollIndex = newScrollIndex
+    }
+
+    fun getActivities(authToken: String, completed: MutableState<Boolean>) {
+        viewModelScope.launch {
+            val response = badgerApi.getActivities(authToken)
+            if (response.isSuccessful) {
+                response.body()!!.forEach{
+                    activities.add(it)
+                }
+                completed.value = true
+            }
+            else {
+                error.value = false
+            }
+        }
     }
 }

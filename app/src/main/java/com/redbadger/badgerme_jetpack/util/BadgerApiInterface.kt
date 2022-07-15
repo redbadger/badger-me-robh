@@ -39,4 +39,9 @@ interface BadgerApiInterface {
         @Header("authorization") token: String,
         @Body interest: BadgerInterest
     ): Response<Void>
+
+    @GET("activities")
+    suspend fun getActivities(
+        @Header("authorization") token: String
+    ): Response<List<BadgerEvent>>
 }

@@ -44,6 +44,7 @@ fun BadgerEventsView(
     authToken: String,
     viewModel: EventsViewModel = viewModel()
 ) {
+    val loaded = remember { mutableStateOf(false) }
     val interests = listOf<BadgerInterest>()
     val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
         bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed)
@@ -87,6 +88,10 @@ fun BadgerEventsView(
                                 modifier = Modifier
                                     .size(24.dp)
                                     .clickable {
+                                        if (modalContent.value == "filter") {
+                                            loaded.value = false
+                                            viewModel.getActivities(authToken, loaded)
+                                        }
                                         coroutineScope.launch {
                                             bottomSheetScaffoldState.bottomSheetState.collapse()
                                         }
@@ -135,81 +140,102 @@ fun BadgerEventsView(
         }, sheetPeekHeight = 0.dp
     ) {
         Box {
-            EventsList(
-                getEvents().filter {
-//                                Filter by time
-                    when (viewModel.timeFilter.value) {
-                        "Today" -> {
-                            viewModel.tomorrow.value = -1
-                            viewModel.thisWeek.value = -1
-                            viewModel.nextWeek.value = -1
-                            viewModel.later.value = -1
-
-                            LocalDateTime
-                                .parse(it.startTime).toLocalDate()
-                                .isEqual(LocalDate.now())
+            if(!loaded.value) {
+                viewModel.getActivities(authToken, loaded)
+                Box {
+                    Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            CircularProgressIndicator()
                         }
-                        "Upcoming" -> {
-                            viewModel.tomorrow.value = -1
-                            viewModel.thisWeek.value = -1
-                            viewModel.nextWeek.value = -1
-                            viewModel.later.value = -1
-
-                            LocalDateTime
-                                .parse(it.startTime).toLocalDate()
-                                .isAfter(LocalDate.now())
-                        }
-                        else -> false
                     }
-                }.filter {
+                }
+            }
+            else {
+                EventsList(
+                    viewModel.error.value,
+                    viewModel.activities
+                        .filter {
+//                                Filter by time
+                            when (viewModel.timeFilter.value) {
+                                "Today" -> {
+                                    viewModel.tomorrow.value = -1
+                                    viewModel.thisWeek.value = -1
+                                    viewModel.nextWeek.value = -1
+                                    viewModel.later.value = -1
+
+                                    LocalDateTime
+                                        .parse(it.startTime).toLocalDate()
+                                        .isEqual(LocalDate.now())
+                                }
+                                "Upcoming" -> {
+                                    viewModel.tomorrow.value = -1
+                                    viewModel.thisWeek.value = -1
+                                    viewModel.nextWeek.value = -1
+                                    viewModel.later.value = -1
+
+                                    LocalDateTime
+                                        .parse(it.startTime).toLocalDate()
+                                        .isAfter(LocalDate.now())
+                                }
+                                else -> false
+                            }
+                        }
+                        .filter {
 //                                Filter by interest
-                    /*TODO Need to properly get BadgerInterests from the API ala InterestSetup*/
-                    (viewModel.food.value && it.tags.contains(
-                        BadgerInterest(
-                            "0",
-                            "Food"
-                        )
-                    )) ||
-                    (viewModel.drinks.value && it.tags.contains(
-                        BadgerInterest(
-                            "1",
-                            "Drinks"
-                        )
-                    )) ||
-                    (viewModel.coffee.value && it.tags.contains(
-                        BadgerInterest(
-                            "2",
-                            "Coffee"
-                        )
-                    )) ||
-                    (viewModel.chats.value && it.tags.contains(
-                        BadgerInterest(
-                            "3",
-                            "Chats"
-                        )
-                    )) ||
-                    (viewModel.walks.value && it.tags.contains(
-                        BadgerInterest(
-                            "4",
-                            "Walks"
-                        )
-                    )) ||
-                    (viewModel.hugs.value && it.tags.contains(
-                        BadgerInterest(
-                            "5",
-                            "Hugs"
-                        )
-                    ))
-                }.sortedBy { it.startTime },
-                BadgerUser(
-                    "1",
-                    "Hugh",
-                    "Mann",
-                    "hugh.mann@red-badger.com"
-                ),
-                viewModel,
-                scrollState
-            )
+                            /*TODO Need to properly get BadgerInterests from the API ala InterestSetup*/
+                            (viewModel.food.value && it.tags.contains(
+                                BadgerInterest(
+                                    "0",
+                                    "Food"
+                                )
+                            )) ||
+                                    (viewModel.drinks.value && it.tags.contains(
+                                        BadgerInterest(
+                                            "1",
+                                            "Drinks"
+                                        )
+                                    )) ||
+                                    (viewModel.coffee.value && it.tags.contains(
+                                        BadgerInterest(
+                                            "2",
+                                            "Coffee"
+                                        )
+                                    )) ||
+                                    (viewModel.chats.value && it.tags.contains(
+                                        BadgerInterest(
+                                            "3",
+                                            "Chats"
+                                        )
+                                    )) ||
+                                    (viewModel.walks.value && it.tags.contains(
+                                        BadgerInterest(
+                                            "4",
+                                            "Walks"
+                                        )
+                                    )) ||
+                                    (viewModel.hugs.value && it.tags.contains(
+                                        BadgerInterest(
+                                            "5",
+                                            "Hugs"
+                                        )
+                                    ))
+                        }
+                        .sortedBy {
+                            it.startTime
+                        },
+                    BadgerUser(
+                        "1",
+                        "Hugh",
+                        "Mann",
+                        "hugh.mann@red-badger.com"
+                    ),
+                    viewModel,
+                    scrollState
+                )
+            }
             ScrollableAppBar(
                 viewModel,
                 scrollUpState,
