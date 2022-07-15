@@ -54,7 +54,7 @@ interface BadgerApiInterface {
 
 data class ApiActivity (
     var name: String,
-    var userId: String,
+    var created_by: String,
     var location: String,
     var start_time: String,
     var end_time: String

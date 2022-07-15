@@ -47,20 +47,38 @@ class EventsViewModel: ViewModel() {
             val response = badgerApi.getActivities(authToken)
             if (response.isSuccessful) {
                 response.body()!!.forEach{ activity ->
-                    activities.add(
-                        BadgerEvent(
-                            name = activity.name,
-                            startTime = activity.start_time,
-                            endTime = activity.end_time,
-                            location = activity.location,
-                            created_by = BadgerUser(
-                                activity.userId,
-                                "test",
-                                "guy",
-                                "test@red-badger.com"
+//                      Seems a bit dumb, but we have to query the API
+//                      to get the user details for each activity
+                    viewModelScope.launch {
+                        val userResponse = badgerApi.getUser(authToken, activity.created_by)
+                        if (userResponse.isSuccessful) {
+                            activities.add(
+                                BadgerEvent(
+                                    name = activity.name,
+                                    startTime = activity.start_time,
+                                    endTime = activity.end_time,
+                                    location = activity.location,
+                                    created_by = userResponse.body()!!
+                                )
                             )
-                        )
-                    )
+                        }
+                        else {
+                            activities.add(
+                                BadgerEvent(
+                                    name = activity.name,
+                                    startTime = activity.start_time,
+                                    endTime = activity.end_time,
+                                    location = activity.location,
+                                    created_by = BadgerUser(
+                                        null,
+                                        "Unknown",
+                                        "Badger",
+                                        "unknown.badger@red-badger.com"
+                                    )
+                                )
+                            )
+                        }
+                    }
                 }
                 completed.value = true
             }

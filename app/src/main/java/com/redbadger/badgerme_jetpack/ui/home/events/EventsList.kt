@@ -78,7 +78,8 @@ fun EventsList(
                         )
                     }
                 }
-            } else {
+            }
+            else {
                 val currentWeek = LocalDate
                     .now()
                     .get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear())
