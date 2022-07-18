@@ -46,19 +46,19 @@ class EventsViewModel: ViewModel() {
         lastScrollIndex = newScrollIndex
     }
 
-    fun getInterests(authToken: String, completed: MutableState<Boolean>) {
+    private fun getInterests(authToken: String) {
         viewModelScope.launch {
             val response = badgerApi.getInterests(authToken)
             if (response.isSuccessful) {
                 response.body()!!.forEach{
                     interests[it.name] = it
                 }
-                completed.value = true
             }
         }
     }
 
     fun getActivities(authToken: String, completed: MutableState<Boolean>, userId: String) {
+        getInterests(authToken)
         if (currentUser.value.id != userId) {
             viewModelScope.launch {
                 val response = badgerApi.getUser(authToken, userId)
