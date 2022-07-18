@@ -392,8 +392,49 @@ fun FilterSelect(viewModel: EventsViewModel = viewModel()) {
 
 @Composable
 fun AddEvent(viewModel: EventsViewModel = viewModel()){
-    Row {
-        Text(text = "<Placeholder - Add Event>", style = MaterialTheme.typography.h2)
+    Column(Modifier.padding(horizontal = 16.dp)) {
+        Row(Modifier.padding(bottom = 8.dp)) {
+            Text(text = "Start Date", style = MaterialTheme.typography.button)
+        }
+        Row(Modifier.padding(bottom = 24.dp)) {
+            Text(text = "<date chips>")
+        }
+        Row(Modifier.padding(bottom = 8.dp)) {
+            Text(text = "Duration", style = MaterialTheme.typography.button)
+        }
+        Row(Modifier.padding(bottom = 24.dp)) {
+            Text(text = "<duration chips>")
+        }
+        Row(Modifier.padding(bottom = 8.dp)) {
+            Text(text = "Event tags", style = MaterialTheme.typography.button)
+        }
+        Row(Modifier.padding(bottom = 24.dp)) {
+            Text(text = "<tag chips>")
+        }
+        Row(Modifier.padding(bottom = 8.dp)) {
+            Text(text = "Event name", style = MaterialTheme.typography.button)
+        }
+        Row(Modifier.padding(bottom = 24.dp)) {
+            TextField(
+                value = "",
+                onValueChange = {},
+                placeholder = { Text("Enter event name") },
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+        Row(Modifier.padding(bottom = 8.dp)) {
+            Text(text = "Description", style = MaterialTheme.typography.button)
+        }
+        Row(Modifier.padding(bottom = 24.dp)) {
+            TextField(
+                value = "",
+                onValueChange = {},
+                placeholder = { Text("For example: Burritos at Whitecross Market. Let’s leave at 1pm") },
+                modifier = Modifier
+                    .height(180.dp)
+                    .fillMaxWidth()
+            )
+        }
     }
 }
 
