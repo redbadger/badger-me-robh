@@ -40,7 +40,7 @@ import java.time.OffsetDateTime
 @Composable
 fun BadgerEventsView(
     navHostController: NavHostController?,
-    userId: String?,
+    userId: String,
     authToken: String,
     viewModel: EventsViewModel = viewModel()
 ) {
@@ -90,7 +90,7 @@ fun BadgerEventsView(
                                     .clickable {
                                         if (modalContent.value == "filter") {
                                             loaded.value = false
-                                            viewModel.getActivities(authToken, loaded)
+                                            viewModel.getActivities(authToken, loaded, userId)
                                         }
                                         coroutineScope.launch {
                                             bottomSheetScaffoldState.bottomSheetState.collapse()
@@ -141,7 +141,7 @@ fun BadgerEventsView(
     ) {
         Box {
             if(!loaded.value) {
-                viewModel.getActivities(authToken, loaded)
+                viewModel.getActivities(authToken, loaded, userId)
                 Box {
                     Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
                         Row(
@@ -183,55 +183,32 @@ fun BadgerEventsView(
                                 else -> false
                             }
                         }
-//                        .filter {
-////                                Filter by interest
-//                            /*TODO Need to properly get BadgerInterests from the API ala InterestSetup*/
-//                            (viewModel.food.value && it.tags.contains(
-//                                BadgerInterest(
-//                                    "0",
-//                                    "Food"
-//                                )
-//                            )) ||
-//                                    (viewModel.drinks.value && it.tags.contains(
-//                                        BadgerInterest(
-//                                            "1",
-//                                            "Drinks"
-//                                        )
-//                                    )) ||
-//                                    (viewModel.coffee.value && it.tags.contains(
-//                                        BadgerInterest(
-//                                            "2",
-//                                            "Coffee"
-//                                        )
-//                                    )) ||
-//                                    (viewModel.chats.value && it.tags.contains(
-//                                        BadgerInterest(
-//                                            "3",
-//                                            "Chats"
-//                                        )
-//                                    )) ||
-//                                    (viewModel.walks.value && it.tags.contains(
-//                                        BadgerInterest(
-//                                            "4",
-//                                            "Walks"
-//                                        )
-//                                    )) ||
-//                                    (viewModel.hugs.value && it.tags.contains(
-//                                        BadgerInterest(
-//                                            "5",
-//                                            "Hugs"
-//                                        )
-//                                    ))
-//                        }
+                        .filter {
+//                                Filter by interest
+                            /*TODO Need to properly get BadgerInterests from the API ala InterestSetup*/
+                            (viewModel.food.value && it.tags.contains(
+                                viewModel.interests["Food"]
+                            )) ||
+                            (viewModel.drinks.value && it.tags.contains(
+                                viewModel.interests["Drinks"]
+                            )) ||
+                            (viewModel.coffee.value && it.tags.contains(
+                                viewModel.interests["Coffee"]
+                            )) ||
+                            (viewModel.chats.value && it.tags.contains(
+                                viewModel.interests["Chats"]
+                            )) ||
+                            (viewModel.walks.value && it.tags.contains(
+                                viewModel.interests["Walks"]
+                            )) ||
+                            (viewModel.hugs.value && it.tags.contains(
+                                viewModel.interests["Hugs"]
+                            ))
+                        }
                         .sortedBy {
                             it.startTime
                         },
-                    BadgerUser(
-                        "1",
-                        "Hugh",
-                        "Mann",
-                        "hugh.mann@red-badger.com"
-                    ),
+                    viewModel.currentUser.value,
                     viewModel,
                     scrollState
                 )

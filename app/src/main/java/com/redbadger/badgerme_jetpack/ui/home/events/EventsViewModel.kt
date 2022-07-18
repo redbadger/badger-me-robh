@@ -29,6 +29,10 @@ class EventsViewModel: ViewModel() {
     val walks =  mutableStateOf(false)
     val hugs =  mutableStateOf(false)
 
+    val currentUser = mutableStateOf(BadgerUser(null, "", "", ""))
+
+    val interests = mutableMapOf<String, BadgerInterest>()
+
     private var lastScrollIndex = 0
 
     private val _scrollUp = MutableLiveData(false)
@@ -42,7 +46,27 @@ class EventsViewModel: ViewModel() {
         lastScrollIndex = newScrollIndex
     }
 
-    fun getActivities(authToken: String, completed: MutableState<Boolean>) {
+    fun getInterests(authToken: String, completed: MutableState<Boolean>) {
+        viewModelScope.launch {
+            val response = badgerApi.getInterests(authToken)
+            if (response.isSuccessful) {
+                response.body()!!.forEach{
+                    interests[it.name] = it
+                }
+                completed.value = true
+            }
+        }
+    }
+
+    fun getActivities(authToken: String, completed: MutableState<Boolean>, userId: String) {
+        if (currentUser.value.id != userId) {
+            viewModelScope.launch {
+                val response = badgerApi.getUser(authToken, userId)
+                if (response.isSuccessful) {
+                    currentUser.value = response.body()!!
+                }
+            }
+        }
         viewModelScope.launch {
             val response = badgerApi.getActivities(authToken)
             if (response.isSuccessful) {
