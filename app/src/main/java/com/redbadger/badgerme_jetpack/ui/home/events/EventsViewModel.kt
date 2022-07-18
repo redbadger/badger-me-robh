@@ -1,7 +1,8 @@
 package com.redbadger.badgerme_jetpack.ui.home.events
 
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class EventsViewModel: ViewModel() {
@@ -17,4 +18,17 @@ class EventsViewModel: ViewModel() {
     val chats =  mutableStateOf(false)
     val walks =  mutableStateOf(false)
     val hugs =  mutableStateOf(false)
+
+    private var lastScrollIndex = 0
+
+    private val _scrollUp = MutableLiveData(false)
+    val scrollUp: LiveData<Boolean>
+        get() = _scrollUp
+
+    fun updateScrollPosition(newScrollIndex: Int) {
+        if (newScrollIndex == lastScrollIndex) return
+
+        _scrollUp.value = newScrollIndex > lastScrollIndex
+        lastScrollIndex = newScrollIndex
+    }
 }

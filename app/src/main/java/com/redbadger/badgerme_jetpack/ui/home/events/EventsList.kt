@@ -2,8 +2,7 @@ package com.redbadger.badgerme_jetpack.ui.home.events
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -23,7 +22,12 @@ import java.time.temporal.WeekFields
 import java.util.*
 
 @Composable
-fun EventsList(events: List<BadgerEvent>, currentUser: BadgerUser, viewModel: EventsViewModel) {
+fun EventsList(
+    events: List<BadgerEvent>,
+    currentUser: BadgerUser,
+    viewModel: EventsViewModel,
+    scrollState: LazyListState
+) {
     Column {
         if (events.isEmpty()) {
             Column(modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Center) {
@@ -48,10 +52,14 @@ fun EventsList(events: List<BadgerEvent>, currentUser: BadgerUser, viewModel: Ev
                 .now()
                 .get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear())
 
-            LazyColumn(verticalArrangement = Arrangement.Top) {
+            LazyColumn(
+                verticalArrangement = Arrangement.Top,
+                state = scrollState,
+                contentPadding = PaddingValues(top = 75.dp)
+            ) {
                 itemsIndexed(events) { index, event ->
                     if (index == 0) Spacer(modifier = Modifier.padding(top = 16.dp))
-                    Row(Modifier.fillMaxWidth()) {
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
 //                        Tomorrow
                         Column {
                             Column(verticalArrangement = Arrangement.Top) {
@@ -74,7 +82,7 @@ fun EventsList(events: List<BadgerEvent>, currentUser: BadgerUser, viewModel: Ev
                             }
                         }
                     }
-                    Row(Modifier.fillMaxWidth()) {
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
 //                         This week
                         Column {
                             Column(verticalArrangement = Arrangement.Top) {
@@ -104,7 +112,7 @@ fun EventsList(events: List<BadgerEvent>, currentUser: BadgerUser, viewModel: Ev
                             }
                         }
                     }
-                    Row(Modifier.fillMaxWidth()) {
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
 //                        Next week
                         Column {
                             Column(verticalArrangement = Arrangement.Top) {
@@ -131,7 +139,7 @@ fun EventsList(events: List<BadgerEvent>, currentUser: BadgerUser, viewModel: Ev
                             }
                         }
                     }
-                    Row(Modifier.fillMaxWidth()) {
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
 //                        Later
                         Column {
                             Column(verticalArrangement = Arrangement.Top) {
@@ -331,7 +339,8 @@ fun EventsListPreview() {
                 "Mann",
                 "hugh.mann@red-badger.com"
             ),
-            viewModel()
+            viewModel(),
+            rememberLazyListState()
         )
     }
 }
@@ -348,7 +357,8 @@ fun EmptyEventsListPreview() {
                 "Mann",
                 "hugh.mann@red-badger.com"
             ),
-            viewModel()
+            viewModel(),
+            rememberLazyListState()
         )
     }
 }
