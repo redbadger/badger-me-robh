@@ -185,7 +185,6 @@ fun BadgerEventsView(
                         }
                         .filter {
 //                                Filter by interest
-                            /*TODO Need to properly get BadgerInterests from the API ala InterestSetup*/
                             (viewModel.food.value && it.tags.contains(
                                 viewModel.interests["Food"]
                             )) ||
