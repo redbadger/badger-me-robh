@@ -34,16 +34,17 @@ import com.redbadger.badgerme_jetpack.util.BadgerUser
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.time.LocalDateTime
+import java.time.OffsetDateTime
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun BadgerEventsView(
     navHostController: NavHostController?,
-    userId: String?,
+    userId: String,
     authToken: String,
     viewModel: EventsViewModel = viewModel()
 ) {
+    val loaded = remember { mutableStateOf(false) }
     val interests = listOf<BadgerInterest>()
     val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
         bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed)
@@ -87,6 +88,10 @@ fun BadgerEventsView(
                                 modifier = Modifier
                                     .size(24.dp)
                                     .clickable {
+                                        if (modalContent.value == "filter") {
+                                            loaded.value = false
+                                            viewModel.getActivities(authToken, loaded, userId)
+                                        }
                                         coroutineScope.launch {
                                             bottomSheetScaffoldState.bottomSheetState.collapse()
                                         }
@@ -135,81 +140,78 @@ fun BadgerEventsView(
         }, sheetPeekHeight = 0.dp
     ) {
         Box {
-            EventsList(
-                getEvents().filter {
-//                                Filter by time
-                    when (viewModel.timeFilter.value) {
-                        "Today" -> {
-                            viewModel.tomorrow.value = -1
-                            viewModel.thisWeek.value = -1
-                            viewModel.nextWeek.value = -1
-                            viewModel.later.value = -1
-
-                            LocalDateTime
-                                .parse(it.startTime).toLocalDate()
-                                .isEqual(LocalDate.now())
+            if(!loaded.value) {
+                viewModel.getActivities(authToken, loaded, userId)
+                Box {
+                    Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            CircularProgressIndicator()
                         }
-                        "Upcoming" -> {
-                            viewModel.tomorrow.value = -1
-                            viewModel.thisWeek.value = -1
-                            viewModel.nextWeek.value = -1
-                            viewModel.later.value = -1
-
-                            LocalDateTime
-                                .parse(it.startTime).toLocalDate()
-                                .isAfter(LocalDate.now())
-                        }
-                        else -> false
                     }
-                }.filter {
+                }
+            }
+            else {
+                EventsList(
+                    viewModel.error.value,
+                    viewModel.activities
+                        .filter {
+//                                Filter by time
+                            when (viewModel.timeFilter.value) {
+                                "Today" -> {
+                                    viewModel.tomorrow.value = -1
+                                    viewModel.thisWeek.value = -1
+                                    viewModel.nextWeek.value = -1
+                                    viewModel.later.value = -1
+
+                                    OffsetDateTime
+                                        .parse(it.startTime).toLocalDate()
+                                        .isEqual(LocalDate.now())
+                                }
+                                "Upcoming" -> {
+                                    viewModel.tomorrow.value = -1
+                                    viewModel.thisWeek.value = -1
+                                    viewModel.nextWeek.value = -1
+                                    viewModel.later.value = -1
+
+                                    OffsetDateTime
+                                        .parse(it.startTime).toLocalDate()
+                                        .isAfter(LocalDate.now())
+                                }
+                                else -> false
+                            }
+                        }
+                        .filter {
 //                                Filter by interest
-                    /*TODO Need to properly get BadgerInterests from the API ala InterestSetup*/
-                    (viewModel.food.value && it.tags.contains(
-                        BadgerInterest(
-                            "0",
-                            "Food"
-                        )
-                    )) ||
-                    (viewModel.drinks.value && it.tags.contains(
-                        BadgerInterest(
-                            "1",
-                            "Drinks"
-                        )
-                    )) ||
-                    (viewModel.coffee.value && it.tags.contains(
-                        BadgerInterest(
-                            "2",
-                            "Coffee"
-                        )
-                    )) ||
-                    (viewModel.chats.value && it.tags.contains(
-                        BadgerInterest(
-                            "3",
-                            "Chats"
-                        )
-                    )) ||
-                    (viewModel.walks.value && it.tags.contains(
-                        BadgerInterest(
-                            "4",
-                            "Walks"
-                        )
-                    )) ||
-                    (viewModel.hugs.value && it.tags.contains(
-                        BadgerInterest(
-                            "5",
-                            "Hugs"
-                        )
-                    ))
-                }.sortedBy { it.startTime },
-                BadgerUser(
-                    "1",
-                    "Hugh",
-                    "Mann",
-                    "hugh.mann@red-badger.com"
-                ),
-                viewModel,
-                scrollState
-            )
+                            (viewModel.food.value && it.tags.contains(
+                                viewModel.interests["Food"]
+                            )) ||
+                            (viewModel.drinks.value && it.tags.contains(
+                                viewModel.interests["Drinks"]
+                            )) ||
+                            (viewModel.coffee.value && it.tags.contains(
+                                viewModel.interests["Coffee"]
+                            )) ||
+                            (viewModel.chats.value && it.tags.contains(
+                                viewModel.interests["Chats"]
+                            )) ||
+                            (viewModel.walks.value && it.tags.contains(
+                                viewModel.interests["Walks"]
+                            )) ||
+                            (viewModel.hugs.value && it.tags.contains(
+                                viewModel.interests["Hugs"]
+                            ))
+                        }
+                        .sortedBy {
+                            it.startTime
+                        },
+                    viewModel.currentUser.value,
+                    viewModel,
+                    scrollState
+                )
+            }
             ScrollableAppBar(
                 viewModel,
                 scrollUpState,
@@ -217,26 +219,26 @@ fun BadgerEventsView(
                 modalContent,
                 bottomSheetScaffoldState
             )
-        }
-    }
-    Column(
-        Modifier
-            .fillMaxHeight()
-            .padding(bottom = 14.dp), verticalArrangement = Arrangement.Bottom) {
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .padding(end = 16.dp, bottom = 14.dp), horizontalArrangement = Arrangement.End) {
-            FloatingActionButton(
-                onClick = {
-                    modalContent.value = "add"
-                    coroutineScope.launch {
-                        bottomSheetScaffoldState.bottomSheetState.expand()
-                    }
-                },
+            Column(
+                Modifier
+                    .fillMaxHeight()
+                    .padding(bottom = 14.dp), verticalArrangement = Arrangement.Bottom) {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(end = 16.dp, bottom = 54.dp), horizontalArrangement = Arrangement.End) {
+                    FloatingActionButton(
+                        onClick = {
+                            modalContent.value = "add"
+                            coroutineScope.launch {
+                                bottomSheetScaffoldState.bottomSheetState.expand()
+                            }
+                        },
                         backgroundColor = MaterialTheme.colors.primary
-            ) {
-                Icon(Icons.Filled.Add, "")
+                    ) {
+                        Icon(Icons.Filled.Add, "")
+                    }
+                }
             }
         }
     }
@@ -420,7 +422,9 @@ fun getEvents(): List<BadgerEvent> {
                 )
             ),
             listOf(BadgerInterest("0", "Food")),
-            LocalDateTime.now().plusHours(1).toString(), LocalDateTime.now().plusHours(2).toString()
+            OffsetDateTime.now().plusHours(1).toString(),
+            OffsetDateTime.now().plusHours(2).toString(),
+            "Somewhere"
         ),
         BadgerEvent(
             "Coffee event",
@@ -432,7 +436,9 @@ fun getEvents(): List<BadgerEvent> {
             ),
             listOf(),
             listOf(BadgerInterest("2", "Coffee")),
-            LocalDateTime.now().plusDays(1).plusHours(1).toString(), LocalDateTime.now().plusDays(1).plusHours(1).toString()
+            OffsetDateTime.now().plusDays(1).plusHours(1).toString(),
+            OffsetDateTime.now().plusDays(1).plusHours(1).toString(),
+            "Somewhere"
         ),
         BadgerEvent(
             "Mixed event",
@@ -460,7 +466,9 @@ fun getEvents(): List<BadgerEvent> {
                 BadgerInterest("0", "Food"),
                 BadgerInterest("4", "Walks")
             ),
-            LocalDateTime.now().plusDays(6).toString(), LocalDateTime.now().plusDays(6).toString()
+            OffsetDateTime.now().plusDays(6).toString(),
+            OffsetDateTime.now().plusDays(6).toString(),
+            "Somewhere"
         ),
         BadgerEvent("Walking event",
             BadgerUser(
@@ -490,7 +498,9 @@ fun getEvents(): List<BadgerEvent> {
                 )
             ),
             listOf(BadgerInterest("1", "Walks")),
-            "2022-09-20T12:00:00","2022-09-20T15:00:00"
+            "2022-09-20T12:00:00",
+            "2022-09-20T15:00:00",
+            "Somewhere"
         ),
         BadgerEvent("Drinking event",
             BadgerUser(
@@ -514,7 +524,9 @@ fun getEvents(): List<BadgerEvent> {
                 )
             ),
             listOf(BadgerInterest("1", "Drinks")),
-            "2022-09-09T12:00:00","2022-09-20T15:00:00"
+            "2022-09-09T12:00:00",
+            "2022-09-20T15:00:00",
+            "Somewhere"
         ),
         BadgerEvent("Hugs event",
             BadgerUser(
@@ -525,7 +537,9 @@ fun getEvents(): List<BadgerEvent> {
             ),
             listOf(),
             listOf(BadgerInterest("1", "Hugs")),
-            "2022-09-11T12:00:00","2022-09-20T15:00:00"
+            "2022-09-11T12:00:00",
+            "2022-09-20T15:00:00",
+            "Somewhere"
         ),
         BadgerEvent("Chats event",
             BadgerUser(
@@ -549,7 +563,9 @@ fun getEvents(): List<BadgerEvent> {
                 )
             ),
             listOf(BadgerInterest("1", "Chats")),
-            "2022-09-20T12:00:00","2022-09-20T15:00:00"
+            "2022-09-20T12:00:00",
+            "2022-09-20T15:00:00",
+            "Somewhere"
         ),
         BadgerEvent(
             "Walking event",
@@ -580,7 +596,9 @@ fun getEvents(): List<BadgerEvent> {
                 )
             ),
             listOf(BadgerInterest("4", "Walks")),
-            LocalDateTime.now().plusDays(10).toString(), LocalDateTime.now().plusDays(10).toString()
+            OffsetDateTime.now().plusDays(10).toString(),
+            OffsetDateTime.now().plusDays(10).toString(),
+            "Somewhere"
         ),
         BadgerEvent(
             "Drinking event",
@@ -605,7 +623,9 @@ fun getEvents(): List<BadgerEvent> {
                 )
             ),
             listOf(BadgerInterest("1", "Drinks")),
-            LocalDateTime.now().plusDays(3).toString(), LocalDateTime.now().plusDays(3).toString()
+            OffsetDateTime.now().plusDays(3).toString(),
+            OffsetDateTime.now().plusDays(3).toString(),
+            "Somewhere"
         ),
         BadgerEvent(
             "Hugs event",
@@ -617,7 +637,9 @@ fun getEvents(): List<BadgerEvent> {
             ),
             listOf(),
             listOf(BadgerInterest("5", "Hugs")),
-            LocalDateTime.now().plusDays(5).toString(), LocalDateTime.now().plusDays(5).toString()
+            OffsetDateTime.now().plusDays(5).toString(),
+            OffsetDateTime.now().plusDays(5).toString(),
+            "Somewhere"
         ),
         BadgerEvent(
             "Chats event",
@@ -642,7 +664,9 @@ fun getEvents(): List<BadgerEvent> {
                 )
             ),
             listOf(BadgerInterest("3", "Chats")),
-            LocalDateTime.now().plusDays(14).toString(), LocalDateTime.now().plusDays(14).toString()
+            OffsetDateTime.now().plusDays(14).toString(),
+            OffsetDateTime.now().plusDays(14).toString(),
+            "Somewhere"
         ),
         BadgerEvent("Drinking event",
             BadgerUser(
@@ -666,7 +690,7 @@ fun getEvents(): List<BadgerEvent> {
                 )
             ),
             listOf(BadgerInterest("1", "Drinks")),
-            "2022-09-09T12:00:00","2022-09-20T15:00:00"
+            "2022-09-09T12:00:00","2022-09-20T15:00:00", "Somewhere"
         ),
         BadgerEvent("Hugs event",
             BadgerUser(
@@ -677,7 +701,7 @@ fun getEvents(): List<BadgerEvent> {
             ),
             listOf(),
             listOf(BadgerInterest("1", "Hugs")),
-            "2022-09-11T12:00:00","2022-09-20T15:00:00"
+            "2022-09-11T12:00:00","2022-09-20T15:00:00", "Somewhere"
         ),
         BadgerEvent("Chats event",
             BadgerUser(
@@ -701,7 +725,7 @@ fun getEvents(): List<BadgerEvent> {
                 )
             ),
             listOf(BadgerInterest("1", "Chats")),
-            "2022-09-20T12:00:00","2022-09-20T15:00:00"
+            "2022-09-20T12:00:00","2022-09-20T15:00:00", "Somewhere"
         ),
         BadgerEvent(
             "Walking event",
@@ -732,7 +756,9 @@ fun getEvents(): List<BadgerEvent> {
                 )
             ),
             listOf(BadgerInterest("4", "Walks")),
-            LocalDateTime.now().plusDays(10).toString(), LocalDateTime.now().plusDays(10).toString()
+            OffsetDateTime.now().plusDays(10).toString(),
+            OffsetDateTime.now().plusDays(10).toString(),
+            "Somewhere"
         ),
         BadgerEvent(
             "Drinking event",
@@ -757,7 +783,9 @@ fun getEvents(): List<BadgerEvent> {
                 )
             ),
             listOf(BadgerInterest("1", "Drinks")),
-            LocalDateTime.now().plusDays(3).toString(), LocalDateTime.now().plusDays(3).toString()
+            OffsetDateTime.now().plusDays(3).toString(),
+            OffsetDateTime.now().plusDays(3).toString(),
+            "Somewhere"
         ),
         BadgerEvent(
             "Hugs event",
@@ -769,7 +797,9 @@ fun getEvents(): List<BadgerEvent> {
             ),
             listOf(),
             listOf(BadgerInterest("5", "Hugs")),
-            LocalDateTime.now().plusDays(5).toString(), LocalDateTime.now().plusDays(5).toString()
+            OffsetDateTime.now().plusDays(5).toString(),
+            OffsetDateTime.now().plusDays(5).toString(),
+            "Somewhere"
         ),
         BadgerEvent(
             "Chats event",
@@ -794,7 +824,9 @@ fun getEvents(): List<BadgerEvent> {
                 )
             ),
             listOf(BadgerInterest("3", "Chats")),
-            LocalDateTime.now().plusDays(14).toString(), LocalDateTime.now().plusDays(14).toString()
+            OffsetDateTime.now().plusDays(14).toString(),
+            OffsetDateTime.now().plusDays(14).toString(),
+            "Somewhere"
         )
     )
 }

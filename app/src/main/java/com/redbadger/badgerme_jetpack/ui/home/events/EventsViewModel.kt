@@ -1,11 +1,21 @@
 package com.redbadger.badgerme_jetpack.ui.home.events
 
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.redbadger.badgerme_jetpack.ui.setup.InterestSetupViewModel
+import com.redbadger.badgerme_jetpack.util.*
+import kotlinx.coroutines.launch
 
 class EventsViewModel: ViewModel() {
+    private val badgerApi = RetrofitHelper.getInstance().create(BadgerApiInterface::class.java)
+    val activities = mutableListOf<BadgerEvent>()
+
+    val error = mutableStateOf(false)
+
     val timeFilter = mutableStateOf("Today")
     val tomorrow = mutableStateOf(-1)
     val thisWeek = mutableStateOf(-1)
@@ -19,6 +29,10 @@ class EventsViewModel: ViewModel() {
     val walks =  mutableStateOf(false)
     val hugs =  mutableStateOf(false)
 
+    val currentUser = mutableStateOf(BadgerUser(null, "", "", ""))
+
+    val interests = mutableMapOf<String, BadgerInterest>()
+
     private var lastScrollIndex = 0
 
     private val _scrollUp = MutableLiveData(false)
@@ -30,5 +44,71 @@ class EventsViewModel: ViewModel() {
 
         _scrollUp.value = newScrollIndex > lastScrollIndex
         lastScrollIndex = newScrollIndex
+    }
+
+    private fun getInterests(authToken: String) {
+        viewModelScope.launch {
+            val response = badgerApi.getInterests(authToken)
+            if (response.isSuccessful) {
+                response.body()!!.forEach{
+                    interests[it.name] = it
+                }
+            }
+        }
+    }
+
+    fun getActivities(authToken: String, completed: MutableState<Boolean>, userId: String) {
+        getInterests(authToken)
+        if (currentUser.value.id != userId) {
+            viewModelScope.launch {
+                val response = badgerApi.getUser(authToken, userId)
+                if (response.isSuccessful) {
+                    currentUser.value = response.body()!!
+                }
+            }
+        }
+        viewModelScope.launch {
+            val response = badgerApi.getActivities(authToken)
+            if (response.isSuccessful) {
+                response.body()!!.forEach{ activity ->
+//                      Seems a bit dumb, but we have to query the API
+//                      to get the user details for each activity
+                    viewModelScope.launch {
+                        val userResponse = badgerApi.getUser(authToken, activity.created_by)
+                        if (userResponse.isSuccessful) {
+                            activities.add(
+                                BadgerEvent(
+                                    name = activity.name,
+                                    startTime = activity.start_time,
+                                    endTime = activity.end_time,
+                                    location = activity.location,
+                                    created_by = userResponse.body()!!
+                                )
+                            )
+                        }
+                        else {
+                            activities.add(
+                                BadgerEvent(
+                                    name = activity.name,
+                                    startTime = activity.start_time,
+                                    endTime = activity.end_time,
+                                    location = activity.location,
+                                    created_by = BadgerUser(
+                                        null,
+                                        "Unknown",
+                                        "Badger",
+                                        "unknown.badger@red-badger.com"
+                                    )
+                                )
+                            )
+                        }
+                    }
+                }
+                completed.value = true
+            }
+            else {
+                error.value = false
+            }
+        }
     }
 }
