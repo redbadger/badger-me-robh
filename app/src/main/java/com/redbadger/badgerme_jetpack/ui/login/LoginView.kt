@@ -258,15 +258,9 @@ fun signIn(account: GoogleSignInAccount,
             if (response.isSuccessful)
             {
                 if (response.body()?.isEmpty() == true) {
-                    snackbarScope.launch {
-                        onError(snackbarHostState, "DEBUG: No matching Badgers found - proceeding to register...")
-                    }
                     register(account, navHostController, snackbarHostState, snackbarScope, viewModel)
                 }
                 else {
-//                    snackbarScope.launch {
-//                        onError(snackbarHostState, "DEBUG: Got ${response.body()?.get(0)?.firstName} ${response.body()?.get(0)?.lastName}!")
-//                    }
                     if (newUser) {
                         navHostController?.navigate(
                             "${Screen.InterestsSetup.route}/" +

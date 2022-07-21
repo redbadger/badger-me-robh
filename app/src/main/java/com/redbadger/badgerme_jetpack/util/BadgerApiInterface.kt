@@ -14,7 +14,7 @@ interface BadgerApiInterface {
     suspend fun addUser (
         @Header("authorization") token: String,
         @Query("email") email: String
-    ): Response<BadgerUser>
+    ): Response<Void>
 
     @GET("users/{id}")
     suspend fun getUser(
@@ -26,7 +26,7 @@ interface BadgerApiInterface {
     suspend fun updateUserInterests(
         @Header("authorization") token: String,
         @Path("id") id: String,
-        @Body interestIds: List<String>
+        @Body userInterests: ApiUserInterestPatch
     ): Response<Void>
 
     @GET("interests")
@@ -58,4 +58,8 @@ data class ApiActivity (
     var location: String,
     var start_time: String,
     var end_time: String
+)
+
+data class ApiUserInterestPatch(
+    var interestIds: List<String>
 )

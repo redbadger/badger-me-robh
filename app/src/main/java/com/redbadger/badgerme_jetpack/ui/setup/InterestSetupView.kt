@@ -17,6 +17,7 @@ import androidx.navigation.NavHostController
 import com.redbadger.badgerme_jetpack.R
 import com.redbadger.badgerme_jetpack.navigation.Screen
 import com.redbadger.badgerme_jetpack.ui.theme.BadgerMe_JetpackTheme
+import com.redbadger.badgerme_jetpack.util.ApiUserInterestPatch
 import com.redbadger.badgerme_jetpack.util.BadgerApiInterface
 import com.redbadger.badgerme_jetpack.util.RetrofitHelper
 import kotlinx.coroutines.*
@@ -233,7 +234,7 @@ fun updateInterests(
         }
     }
     CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-        val response = badgerApi.updateUserInterests(authToken, userId, userInterests)
+        val response = badgerApi.updateUserInterests(authToken, userId, ApiUserInterestPatch(userInterests) )
         withContext(Dispatchers.Main) {
             if (response.isSuccessful) {
                 navHostController?.navigate("${Screen.ProfileSetup.route}/${userId}/${authToken}")
